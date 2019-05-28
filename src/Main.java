@@ -6,6 +6,5 @@ public class Main {
         } catch (Exception e){
             return;
         }
-        System.out.println("ytest");
     }
 }

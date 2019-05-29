@@ -1,8 +1,14 @@
+package src;
+
 public class Obstacle extends Entity{
 	boolean hacked;
-	Obstacle(int x, int y, int facing, int size) {
-		super(x, y, facing, size);	
+	Obstacle(int x, int y, int facing) {
+		super(x, y, facing);	
 		hacked = false;
+	}
+	Obstacle(int x, int y, int facing, boolean hacked) {
+		super(x, y, facing);	
+		this.hacked = hacked;
 	}
 	public void killPlayer() {
 		//kills player if hitbox intersects

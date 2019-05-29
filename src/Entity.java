@@ -1,5 +1,3 @@
-package src;
-
 import java.awt.Rectangle;
 
 public class Entity {

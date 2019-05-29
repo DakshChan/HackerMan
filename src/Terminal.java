@@ -23,12 +23,10 @@ class Terminal extends Entity{
     private Rectangle hitbox;
 
     // constructor for making a new terminal
-    Terminal(int y, int x, int facing, int tier, int type){
+    Terminal(int x, int y, int facing, int tier, int type){
+        super(x,y,facing);
         maxX = Toolkit.getDefaultToolkit().getScreenSize().width;
         maxY = Toolkit.getDefaultToolkit().getScreenSize().height;
-        setY(y);
-        setX(x);
-        setFacing(facing);
         setHacked(false);
         setTier(tier);
         setType(type); // 0 for doors, 1 for lasers, 2 for lights

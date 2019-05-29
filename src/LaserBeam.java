@@ -1,5 +1,3 @@
-package src;
-
 import java.awt.Image;
 
 public class LaserBeam extends Obstacle{

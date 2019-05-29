@@ -1,7 +1,7 @@
 import java.io.File;
 import java.util.Scanner;
 public class MapLoader {
-	public static String[][] load(String input)throws Exception{
+	public static Entity[][] load(String input)throws Exception{
 		Scanner file = new Scanner(new File(input));
 		int amount = 0;
 		while(file.hasNext()) {
@@ -9,14 +9,44 @@ public class MapLoader {
 			amount++;
 		}
 		file.close();
-		String[][] map = new String[amount][amount];
+		String[][] stringMap = new String[amount][amount];
 		file = new Scanner(new File(input));
 		for(int i = 0; i < amount; i++){
 			for (int j = 0; j < amount; j++){
-				map[i][j] = file.next();
+				stringMap[i][j] = file.next();
 			}
 		}
 		file.close();
+
+		Entity[][] map = new Entity[amount][amount];
+		for(int i = 0; i < amount; i++){
+			for(int j = 0; j < amount; j++){
+				//Entity Parsing
+				String[] temp = stringMap[i][j].split("/");
+				// terminal/int facing/int tier/int type
+				// terminal/0/0/0
+				if(temp[0].equals("terminal")){
+					System.out.println("terminal");
+					map[i][j] = new Terminal(i,j,Integer.parseInt(temp[1]),Integer.parseInt(temp[2]),Integer.parseInt(temp[3]));
+				}
+				// lasernode/int facing
+				// lasernode/0
+				else if (temp[0].equals("lasernode")){
+					System.out.println("laser node");
+					map[i][j] = new LaserNode(i,j,Integer.parseInt(temp[1]));
+				}
+				// null
+				else if (temp[0].equals("null")){
+					System.out.println("null");
+					map[i][j] = null;
+				}
+				/*
+				else if (temp[0] == ""){
+
+				}
+				 */
+			}
+		}
 		return map;
 	}
 }

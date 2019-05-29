@@ -1,5 +1,3 @@
-package src;
-
 public class Obstacle extends Entity{
 	boolean hacked;
 	Obstacle(int x, int y, int facing) {

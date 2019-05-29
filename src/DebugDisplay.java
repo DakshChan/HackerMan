@@ -1,8 +1,7 @@
-package src;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Toolkit;
+import java.lang.invoke.ConstantCallSite;
 import java.util.Random;
 
 import javax.swing.JFrame;
@@ -12,15 +11,24 @@ import javax.swing.JPanel;
 public class DebugDisplay {
 	public static void main (String[]args) {
 		Random rand = new Random();
-		Entity[][] map = new Entity[8][8];
-		int ratio = Toolkit.getDefaultToolkit().getScreenSize().height/8;
-		Entity.Size = ratio;
-		for(int c = 0; c < 2; c++) {
-			int x = rand.nextInt(8);
-			int y = rand.nextInt(8);
-			map[x][y] = new Guard(x,y,0,null);
+		Entity[][] map;
+		try {
+			map = MapLoader.load("C:\\Users\\daksh\\IdeaProjects\\HackerMan\\src\\map.txt");
+		} catch (Exception e){
+			System.out.println(e);
+			map = new Entity[0][0];
 		}
+		int ratio = Toolkit.getDefaultToolkit().getScreenSize().height/map.length;
+		Entity.Size = ratio;
 		Window window = new Window(map);
+		while(true) {
+			try {
+				Thread.sleep(1000);
+			} catch (Exception e){
+				System.out.println(e);
+			}
+			window.repaint();
+		}
 	}
 }
 class Window extends JFrame{
@@ -28,7 +36,7 @@ class Window extends JFrame{
 	public Window(Entity[][] map) {
 		this.maxX = Toolkit.getDefaultToolkit().getScreenSize().width;
 	    this. maxY = Toolkit.getDefaultToolkit().getScreenSize().height;
-	    this.screenRatio = maxY / (map.length+1); 
+	    this.screenRatio = maxY/map.length;
 		setTitle("Sad");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(maxX,maxY);
@@ -51,14 +59,27 @@ class MapPanel extends JPanel{
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		for(int hc = 0; hc < map.length; hc++ ) {
-			for(int vc = 0; vc < map[0].length; vc ++) {
-				if(map[hc][vc] instanceof Guard) {
-					Guard target = (Guard)map[hc][vc];
+		for(int i = 0; i < map.length; i++ ) {
+			for(int j = 0; j < map[0].length; j ++) {
+				if(map[i][j] instanceof Terminal){
+					Terminal target = (Terminal)map[i][j];
+					g.setColor(Color.RED);
+					g.fillRect(target.x*ratio, target.y*ratio, Entity.Size, Entity.Size);
+				}
+				if(map[i][j] instanceof LaserNode){
+					LaserNode target = (LaserNode)map[i][j];
+					g.setColor(Color.MAGENTA);
+					g.fillRect(target.x*ratio, target.y*ratio, Entity.Size, Entity.Size);
+				}
+
+				/*
+				if(map[i][j] instanceof Guard) {
+					Guard target = (Guard)map[i][j];
 					g.setColor(Color.RED);
 					g.fillRect(target.x*ratio, target.y*ratio, Entity.Size, Entity.Size);
 					//((Guard)map[hc][vc]).;
 				}
+				 */
 			}
 		}
 	}

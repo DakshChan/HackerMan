@@ -5,7 +5,7 @@
  * @ 05/24 - 06/28
  * This class is used for the terminal interactions on the map
  */
-
+/*
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -140,3 +140,5 @@ class Terminal extends Entity{
 
 
 }
+
+ */

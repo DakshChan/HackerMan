@@ -1,3 +1,5 @@
+//30x30 maps
+
 import java.io.File;
 import java.util.Scanner;
 public class MapLoader {

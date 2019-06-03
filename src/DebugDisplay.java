@@ -1,5 +1,3 @@
-package src;
-
 import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.util.ArrayList;
@@ -30,7 +28,7 @@ class Window extends JFrame{
 	private int maxX,maxY,screenRatio;
 	public Window(Entity[][] map) {
 		this.maxX = Toolkit.getDefaultToolkit().getScreenSize().width;
-	    this. maxY = Toolkit.getDefaultToolkit().getScreenSize().height;
+	    this.maxY = Toolkit.getDefaultToolkit().getScreenSize().height;
 		setTitle("Sad");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(maxX,maxY);

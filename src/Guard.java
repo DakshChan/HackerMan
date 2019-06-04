@@ -1,3 +1,5 @@
+package src;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -8,18 +10,20 @@ public class Guard extends Obstacle{
 	int index;
 	int xPixels;
 	int yPixels;
+	int sightRange;
 	boolean reverse;
 	Rectangle sightLine;
 	ArrayList<Pair> path;
 	static Image[] guardTex;
 	Guard(int x, int y, int facing, ArrayList<Pair> path) {
 		super(x, y, facing);
+		this.index = 0;
+		this.sightRange = 3;
 		this.xPixels = x*Size;
 		this.yPixels = y*Size;
+		this.reverse = false;
 		this.sightLine = new Rectangle();
 		this.path = path;
-		this.index = 0;
-		this.reverse = false;
 	}
 	@Override
 	public void killPlayer(){
@@ -68,8 +72,15 @@ public class Guard extends Obstacle{
 		hitbox.y = this.yPixels;
 	}
 	public void setSightLine(Entity[][]grid) {
+		int xStop; 
+		int yStop;
 		if (this.facing == 1) {
-			int yStop = -1;
+			if(this.hacked) {
+				yStop = Math.max(-1, (this.yPixels/Size) - sightRange);
+			}
+			else {
+				yStop = -1;
+			}
 			for (int c = this.y; c >= 0 && yStop == -1; c--) {
 				if(grid[this.x][c] != null) {
 					yStop = c;
@@ -81,7 +92,12 @@ public class Guard extends Obstacle{
 			this.sightLine.height = this.yPixels - (yStop+1)*Size;
 		} 
 		else if (this.facing == 2) {
-			int xStop = grid.length;
+			if(this.hacked) {
+				xStop = Math.min(grid.length, (this.xPixels/Size) + (sightRange + 1));
+			}
+			else {
+				xStop = grid.length;
+			}
 			for (int c = this.x; c < xStop; c++) {
 				if(grid[c][this.y] != null) {
 					xStop = c;
@@ -94,7 +110,12 @@ public class Guard extends Obstacle{
 			 
 		} 
 		else if (this.facing == 3) {
-			int yStop = grid.length;
+			if(this.hacked) {
+				yStop = Math.min(grid[this.y].length, (this.yPixels/Size) + (sightRange + 1));
+			}
+			else {
+				yStop = grid[this.y].length;
+			}
 			for (int c = this.y; c < yStop; c++) {
 				if(grid[this.x][c] != null) {
 					yStop = c;
@@ -107,7 +128,12 @@ public class Guard extends Obstacle{
 			//System.out.println(yStop);
 		} 
 		else if (this.facing == 4) {
-			int xStop = -1;
+			if(this.hacked) {
+				xStop = Math.max(-1, (this.xPixels/Size) - (sightRange));
+			}
+			else {
+				xStop = -1;
+			}
 			for (int c = this.x; c >= 0 && xStop == -1; c--) {
 				if(grid[c][this.y] != null) {
 					xStop = c;

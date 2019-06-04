@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.Map;
 
 public class MapCreator {
 	public static void main(String[] args){
@@ -27,21 +28,49 @@ class Panel extends JFrame {
 }
 
 class EntityDisplay extends JFrame {
-	Entity[][] entities;
+	Entity[][][] entities = new Entity[3][30][30];
 	String[] entityTypes;
-	public EntityDisplay(Entity[][] entities, String[] entityTypes) {
-		this.entities = entities;
-		this.entityTypes = entityTypes;
+	public EntityDisplay(String[][][] entities) {
 		setLayout(new GridLayout(30,30));
+		for (int i = 0; i < 30; i++){
+			for (int j = 0; j < 30; j++){
+				Image[] temp = new Image[0];
+				for (int k = 0; k < 3; k++) {
+					this.entities[k][i][j] = MapLoader.entityParser(entities[i][j][k],0,0);
 
+					add(new ImagePanel());
+				}
+			}
+		}
+	}
+}
+
+class ImagePanel extends JPanel {
+	Image[] images;
+	public ImagePanel(Image[] images){
+		this.images = images;
+	}
+
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		for (int i = 0; i < this.images.length; i++){
+			g.drawImage(images[i], 0, 0, this);
+		}
 	}
 }
 
 class EntitySelector extends JPanel {
-	Entity[][] entities;
-	public EntitySelector(Entity[][] entities,String[] ) {
-		this.entities = entities;
+	String[] entityTypes;
+	public EntitySelector(String[] entityTypes) {
+		this.entityTypes = entityTypes;
 		setLayout(new FlowLayout());
 
+	}
+}
+
+class GuardPath extends Entity {
+	GuardPath(){
+		super(0,0,0);
 	}
 }

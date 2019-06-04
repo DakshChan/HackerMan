@@ -1,4 +1,4 @@
-public class Obstacle extends Entity{
+abstract class Obstacle extends Entity{
 	boolean hacked;
 	Obstacle(int x, int y, int facing) {
 		super(x, y, facing);	

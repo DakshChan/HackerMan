@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.util.ArrayList;
 
 public class Guard extends Obstacle{
 	int index;
@@ -13,9 +12,9 @@ public class Guard extends Obstacle{
 	int sightRange;
 	boolean reverse;
 	Rectangle sightLine;
-	ArrayList<Pair> path;
+	Pair[] path;
 	static Image[] guardTex;
-	Guard(int x, int y, int facing, ArrayList<Pair> path) {
+	Guard(int x, int y, int facing, Pair[] path) {
 		super(x, y, facing);
 		this.index = 0;
 		this.sightRange = 3;
@@ -33,13 +32,13 @@ public class Guard extends Obstacle{
 		return new Pair(target.x*Size - this.xPixels, target.y*Size - this.yPixels);
 	}
 	public void followPath() {
-		if(index >= path.size()-1) {
+		if(index >= path.length-1) {
 			reverse = true;
 		}
 		else if(index <= 0){
 			reverse = false;
 		}
-		Pair dist = findDist(path.get(index));
+		Pair dist = findDist(path[index]);
 		if (dist.x > 0) {
 			this.xPixels += 1;
 			this.facing = 2;
@@ -145,6 +144,7 @@ public class Guard extends Obstacle{
 			this.sightLine.height = Size;
 		}
 	}
+	@Override
 	public void drawSelf(Graphics g) {
 		g.setColor(Color.RED);
 		g.fillRect(this.xPixels, this.yPixels, Entity.Size, Entity.Size);

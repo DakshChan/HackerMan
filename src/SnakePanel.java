@@ -1,5 +1,6 @@
 package src;
 
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -10,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 public class SnakePanel extends JPanel implements KeyListener, ActionListener {
 	private final int TILE_SIZE = 20;
@@ -28,18 +30,23 @@ public class SnakePanel extends JPanel implements KeyListener, ActionListener {
 	/* Pressed Key. */
 	int pressedKey;
 	int oldPressedKey;
-	private int snakeSize;
-	private boolean inGame;
+	int snakeSize;
+	boolean inGame;
+	String connectedMapName;
+	CardLayout layoutContainedIn;
 
-	SnakePanel() {
+	SnakePanel(String connectedMapName, CardLayout layoutContainedIn) {
 		pressedKey = KeyEvent.VK_DOWN;
 		snakeSize = 3;
 		inGame = true;
+		this.connectedMapName = connectedMapName;
+		this.layoutContainedIn = layoutContainedIn;
 		setFocusable(true);
-		requestFocusInWindow();
 		setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
 		setBackground(Color.black);
 		addKeyListener(this);
+		Timer t = new Timer(100, this);
+		t.start();
 		// Set snake starting coordinates.
 		for (int i = 0; i < snakeSize; i++) {
 			yCoor[i] = 140 - (i * 30);
@@ -69,19 +76,30 @@ public class SnakePanel extends JPanel implements KeyListener, ActionListener {
 			g.setColor(Color.white);
 			g.drawRect(0, 0, BOARD_WIDTH, BOARD_HEIGHT);
 		} else {
-			gameOver(g);
+			g.setColor(Color.white);
+			g.setFont(new Font("Comic Sans", Font.BOLD, 20));
+			g.drawString(("Game Over! You ate " + (getScore()) + " apples!"), BOARD_WIDTH / 4, BOARD_HEIGHT / 2);
+			g.drawString("Press space to exit", BOARD_WIDTH / 4 + 20, BOARD_HEIGHT / 2 + 30);
+			if(pressedKey == KeyEvent.VK_SPACE) {
+				quitGame();
+			}
 		}
+	}
+	public void quitGame() {
+		layoutContainedIn.show(this.getParent(), this.connectedMapName);
 	}
 
 	public void actionPerformed(ActionEvent e) {
+//		System.out.println("action");
 		checkTile();
 		moveSnakeCoor();
 		repaint();
 	}
 
 	/* Saves pressedKeyCode to pressedKey. */
+	@Override
 	public void keyPressed(KeyEvent e) {
-		//System.out.println("key was pressed");
+//		System.out.println("key was pressed");
 		oldPressedKey = pressedKey;
 		pressedKey = e.getKeyCode();
 	}
@@ -115,19 +133,6 @@ public class SnakePanel extends JPanel implements KeyListener, ActionListener {
 
 		r = (int) (Math.random() * Math.sqrt(ALL_TILES) - 1);
 		apple_y = ((r * TILE_SIZE));
-	}
-
-	/** Simply prints a gameOver-message to screen when called. */
-	private void gameOver(Graphics g) {
-		g.setColor(Color.white);
-		g.setFont(new Font("Comic Sans", Font.BOLD, 20));
-		g.drawString(("Game Over! You ate " + (getScore()) + " apples!"), BOARD_WIDTH / 4, BOARD_HEIGHT / 2);
-//		g.drawString("Press space to restart", BOARD_WIDTH / 4 + 20, BOARD_HEIGHT / 2 + 30);
-		/* Restart game if space is pressed. */
-		/*
-		 * if (pressedKey == KeyEvent.VK_SPACE) { inGame = true; pressedKey =
-		 * KeyEvent.VK_DOWN; setVisible(false); Snake s = new Snake(); }
-		 */
 	}
 
 	private void moveSnakeCoor() {

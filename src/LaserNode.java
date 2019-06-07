@@ -85,6 +85,7 @@ public class LaserNode extends Obstacle{
 			}
 		}
 	}
+	@Override
 	public void drawSelf(Graphics g) {
 		g.setColor(Color.BLUE);
 		g.fillRect(x*Size, y*Size, Size, Size);

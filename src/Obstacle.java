@@ -1,4 +1,8 @@
-abstract class Obstacle extends Entity{
+package src;
+
+import java.awt.Graphics;
+
+public class Obstacle extends Entity{
 	boolean hacked;
 	Obstacle(int x, int y, int facing) {
 		super(x, y, facing);	
@@ -10,5 +14,9 @@ abstract class Obstacle extends Entity{
 	}
 	public void killPlayer() {
 		//kills player if hitbox intersects
+	}
+	@Override
+	public void drawSelf(Graphics g) {
+		
 	}
 }

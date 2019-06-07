@@ -5,11 +5,11 @@ import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 
 public class Display {
 	public static final String MAINPANEL = "Main Panel";
 	public static final String SECONDPANEL = "Secondary Panel";
+	public static final String THIRDPANEL = "Third Panel";
 	
 	public static void main(String[] args) {
 		Entity[][] map = new Entity[8][8];
@@ -31,29 +31,33 @@ public class Display {
 		GameWindow window = new GameWindow();
 		CardLayout savedLayout = new CardLayout();
 		JPanel cardStack = new JPanel(savedLayout);
-		SnakePanel snake = new SnakePanel();
-		cardStack.add(snake, SECONDPANEL);
 		cardStack.add(new MapPanel(map, laser, guards), MAINPANEL);	
 		window.add(cardStack);
 		window.pack();
 		window.setVisible(true);
-		Timer t = new Timer(100, snake);
-		t.start();
-		for (int i = 0; i < 10; i++) {
-			if(i % 2 == 0) {
-				t.restart();
-			}
-			else {
-				t.stop();
-			}
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			
-			savedLayout.next(cardStack);
+		
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		SnakePanel snake = new SnakePanel(MAINPANEL, savedLayout);
+		cardStack.add(snake, SECONDPANEL);
+		savedLayout.next(cardStack);
+		snake.requestFocusInWindow();
+//		do {
+//			if(snake.inGame == false) {
+//				try {
+//					Thread.sleep(2000);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				savedLayout.next(cardStack);
+//			}
+//		}while(snake.inGame);
+//		System.out.println("Out of game");
 		
 	}
 }

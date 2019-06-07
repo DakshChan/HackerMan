@@ -1,140 +1,91 @@
-/**
- * Terminal.java
- * Version 1.0
- * @ Author: Jordan A.
- * @ 05/24 - 06/28
- * This class is used for the terminal interactions on the map
- */
+package src;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.awt.image.*;
-import javax.imageio.*;
+import java.awt.CardLayout;
+import java.awt.Graphics;
+import java.awt.Image;
 
-class Terminal extends Entity{
+import javax.swing.JPanel;
 
-    private int facing;
-    private boolean hacked;
-    private int tier, type, termY, termX, maxY, maxX;
-    private String text;
-    private char hackType;
-    private Rectangle hitbox;
+public class Terminal extends Entity{
+	static Image[] terminalTex;
+    boolean hacked;
+    int type, termY, termX;
+    String mapContainedIn;
+	CardLayout layoutContainedIn;
+	JPanel panelContainedIn;
 
     // constructor for making a new terminal
-    Terminal(int x, int y, int facing, int tier, int type){
+    Terminal(int x, int y, int facing, int type){
         super(x,y,facing);
-        maxX = Toolkit.getDefaultToolkit().getScreenSize().width;
-        maxY = Toolkit.getDefaultToolkit().getScreenSize().height;
-        setHacked(false);
-        setTier(tier);
-        setType(type); // 0 for doors, 1 for lasers, 2 for lights
-        hitbox = new Rectangle(x, y, Size, Size);
+        this.hacked = false;
+        this.type = type; // 0 for doors, 1 for lasers, 2 for lights
     }
-
-    // set terminal values
-    void setY(int y){
-        this.termY = y;
-    } void setX(int x){
-        this.termX = x;
-    } void setFacing(int i){
-        this.facing = i;
-    } void setText(String text){
-        this.text = text;
-    } void setHacked(boolean hacked){
-        this.hacked = hacked;
-    } void setTier(int i){
-        this.tier = i;
-    } void setType(int t){
-        this.type = t;
+    
+    public void startMiniGame(CardLayout layout, JPanel cardStack, String cardName) {
+    	layout.show(cardStack, cardName);
     }
-
-    // return terminal values
-    int returnY(){
-        return this.termY;
-    } int returnX(){
-        return this.termX;
-    } int returnFacing(){
-        return this.facing;
-    } String returnText(){
-        return this.text;
-    } int returnTier(){
-        return this.tier;
-    } int returnType(){
-        return this.type;
-    }
-
-    void draw(Graphics g, int ratio){
-        g.setColor(Color.LIGHT_GRAY);
-        g.fillRect(ratio, ratio, maxY - ratio, maxY - ratio);
-        g.setColor(Color.GRAY);
-        g.fillRect(ratio*3, ratio*3, maxY - (ratio*3), maxY - (ratio*3));
-    }
-
-    void hackType(){
-        if (type == 0){
-            this.hackType = 'd';
-        } else if (type == 1){
-            this.hackType = 'l';
-        } else if (type == 2){
-            this.hackType = 'i';
-        }
-
-    }
-//  void gameCheck(int hackTier){
-//    if (this.text.equals("LASERHACK") && hackTier >= this.tier){
-//      System.out.println("Beginning hack...");
-//    } else if (this.text.equals("DOORHACK") && hackTier >= this.tier){
-//      System.out.println("Beginning hack...");
-//    } else if (this.text.equals("LASERHACK") && hackTier < this.tier){
-//      System.out.println("The security is too advanced...");
-//      System.out.println("You may need to upgrade your skills before you can hack this.\n");
-//    } else {
-//      System.out.println("Unknown input. Please try again.");
-//    }
-//  }
 
     // modifies nodes to delete the obstacle effect
-    void setHacked(char[][] map, int range){
+    public void setHacked(Entity[][] map, int range){
+    	this.hacked = true;
         int xUpper;
         int yUpper;
         int xLower;
         int yLower;
 
         //check to make sure that the node doesn't check outside the map
-        if (this.returnX() + range > map.length) {
+        if (this.x + range > map.length) {
             xUpper = map.length;
         } else {
-            xUpper = this.returnX() + range;
-        } if (this.returnY() + range > map[0].length) {
+            xUpper = this.x + range;
+        } if (this.y + range > map[0].length) {
             yUpper = map[0].length;
         } else {
-            yUpper = this.returnY() + range;
+            yUpper = this.y + range;
         }
 
-        if (this.returnX() - range < 0) {
+        if (this.x - range < 0) {
             xLower = 0;
         } else {
-            xLower = this.returnX() - range;
-        } if (this.returnY() - range < 0) {
+            xLower = this.x - range;
+        } if (this.x - range < 0) {
             yLower = 0;
         } else {
-            yLower = this.returnY() - range;
+            yLower = this.x - range;
         }
 
         for(int vc = yLower; vc < yUpper; vc ++) {
             for(int hc = xLower; hc < xUpper; hc ++) {
-                if (map[vc][hc] == 'l'){
-                    System.out.println("Hacked node! ");
+                if(this.type == 0) {
+//                	if(map[hc][vc] instanceof Door) {
+//                		
+//                	}
+                }
+                else if(this.type == 1) {
+                	if(map[hc][vc] instanceof LaserNode) {
+                		((LaserNode)map[hc][vc]).hacked = true;
+                	}
+                }
+                else if(this.type == 2) {
+                	if(map[hc][vc] instanceof Guard) {
+                		((Guard)map[hc][vc]).hacked = true;
+                	}
                 }
             }
         }
-
-
-
     }
 
-
+    @Override
+    public void drawSelf(Graphics g) {
+    	if(this.type == 0) {
+        	
+        }
+        else if(this.type == 1) {
+        	
+        }
+        else if(this.type == 2) {
+        	
+        }
+    }
 
 }

@@ -9,6 +9,7 @@ public class LaserBeam extends Obstacle{
 	LaserBeam(int x, int y, int facing) {
 		super(x, y, facing);
 	}
+	@Override
 	public void drawSelf(Graphics g) {
 		g.setColor(Color.PINK);
 		g.fillRect(x*Size, y*Size, Size, Size);

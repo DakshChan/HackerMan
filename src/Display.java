@@ -49,6 +49,7 @@ public class Display {
 		cardStack.add(snake, SECONDPANEL);
 		savedLayout.next(cardStack);
 		snake.requestFocusInWindow();
+		boolean[] snakeWin= new boolean[]{false};
 //		do {
 //			if(snake.inGame == false) {
 //				try {

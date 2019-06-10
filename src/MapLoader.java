@@ -33,11 +33,11 @@ public class MapLoader {
 		//Entity Parsing
 		String[] temp = toParse.split("/");
 		Entity entity;
-		// terminal/int facing/int tier/int type
-		// terminal/0/0/0
+		// terminal/int facing/int type
+		// terminal/0/0
 		if(temp[0].equals("terminal")){
 			System.out.println("terminal");
-			entity = new Terminal(i,j,Integer.parseInt(temp[1]),Integer.parseInt(temp[2]),Integer.parseInt(temp[3]));
+			entity = new Terminal(i,j,Integer.parseInt(temp[1]),Integer.parseInt(temp[2]));
 		}
 		// lasernode/int facing
 		// lasernode/0

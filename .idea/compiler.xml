@@ -2,6 +2,20 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <option name="DEFAULT_COMPILER" value="Eclipse" />
+    <excludeFromCompile>
+      <file url="file://$PROJECT_DIR$/src/Simon.java" />
+      <file url="file://$PROJECT_DIR$/src/SimonPanel.java" />
+      <file url="file://$PROJECT_DIR$/src/DebugDisplay.java" />
+      <file url="file://$PROJECT_DIR$/src/Dir.png" />
+      <file url="file://$PROJECT_DIR$/src/Display.java" />
+      <file url="file://$PROJECT_DIR$/src/CardTest.java" />
+      <file url="file://$PROJECT_DIR$/src/MainForGraphics1.java" />
+      <file url="file://$PROJECT_DIR$/src/Renderer.java" />
+      <file url="file://$PROJECT_DIR$/src/Panel00.java" />
+      <file url="file://$PROJECT_DIR$/src/Snake.java" />
+      <file url="file://$PROJECT_DIR$/src/SnakePanel.java" />
+      <file url="file://$PROJECT_DIR$/src/Window.java" />
+    </excludeFromCompile>
     <wildcardResourcePatterns>
       <entry name="!?*.java" />
       <entry name="!?*.form" />

@@ -1,13 +1,20 @@
-import javafx.scene.paint.Color;
-
 import javax.swing.*;
 import java.awt.*;
-import java.util.EventListener;
-import java.util.Map;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class MapCreator {
 	public static void main(String[] args){
 		Panel creator = new Panel();
+		while(true){
+			try {
+				Thread.sleep(1000);
+			} catch (Exception e){
+
+			}
+		}
 	}
 }
 
@@ -15,9 +22,10 @@ class Panel extends JFrame {
 	private int maxX,maxY;
 	Entity[][][] entities;
 	String[] entityTypes;
-	public Panel(String[] entityTypes){
+	String[] entityMeta;
+	public Panel(){
 		entities = new Entity[3][30][30];
-		this.entityTypes = entityTypes;
+		//this.entityTypes = entityTypes;
 		this.maxX = Toolkit.getDefaultToolkit().getScreenSize().width;
 		this.maxY = Toolkit.getDefaultToolkit().getScreenSize().height;
 		setTitle("Map Creator");
@@ -25,63 +33,92 @@ class Panel extends JFrame {
 		setSize(maxX,maxY);
 		setResizable(false);
 		setLayout(new BorderLayout());
-		add(new EntityDisplay(this.entities),BorderLayout.CENTER);
-		add(new EntitySelector(this.entityTypes),BorderLayout.SOUTH);
+		add(new EntityDisplay(this.entities,entityMeta),BorderLayout.CENTER);
+		add(new EntitySelector(this.entityTypes,entityMeta),BorderLayout.SOUTH);
+		setVisible(true);
 	}
 }
 
-class EntityDisplay extends JFrame {
+class EntityDisplay extends JPanel {
 	Entity[][][] entities;
-	public EntityDisplay(Entity[][][] entities) {
+	String[] entityMeta;
+	public EntityDisplay(Entity[][][] entities,String[] entityMeta) {
 		this.entities = entities;
 		setLayout(new GridLayout(30,30));
 		for (int i = 0; i < 30; i++){
 			for (int j = 0; j < 30; j++){
-				//Image[] temp = new Image[0];
-				add(new testImagePanel(new Entity[]{this.entities[0][i][j],this.entities[1][i][j],this.entities[2][i][j]}));
+				add(new testImagePanel(new Entity[]{this.entities[0][i][j],this.entities[1][i][j],this.entities[2][i][j]},this.entityMeta));
 			}
 		}
 	}
 }
 
-class testImagePanel extends JPanel implements EventListener {
+class testImagePanel extends JPanel implements ActionListener, MouseListener {
 	Entity[] entities;
-	public testImagePanel(Entity[] entities){
+	String[] entityMeta;
+	public testImagePanel(Entity[] entities,String[] entityMeta){
 		this.entities = entities;
+		this.entityMeta = entityMeta;
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		for (Entity ent:entities) {
+			ent.drawSelf(g);
+		}
+	}
 
-		if (this.entities[0] instanceof LaserBeam){
-			setBackground(new java.awt.Color(103,7,0));
-		} else if (this.entities[0] instanceof LaserNode){
-			setBackground(new java.awt.Color(103, 0, 81));
-		}
-		if (this.entities[1] != null){
-			g.setColor(new java.awt.Color(0,0,100));
-			g.fillRect(0,0,40,40);
-		}
-		if (this.entities[2] != null){
-			g.setColor(new java.awt.Color(4, 100, 0));
-			g.fillOval(0,0,40,40);
-		}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+
 	}
 }
 
 
 class EntitySelector extends JPanel {
 	String[] entityTypes;
-	public EntitySelector(String[] entityTypes) {
+	String[] entityMeta;
+	public EntitySelector(String[] entityTypes,String[] entityMeta) {
 		this.entityTypes = entityTypes;
+		this.entityMeta = entityMeta;
 		setLayout(new FlowLayout());
-
 	}
 }
 
 class GuardPath extends Entity {
 	GuardPath(){
 		super(0,0,0);
+	}
+
+	@Override
+	public void drawSelf(Graphics g) {
+		g.setColor(new java.awt.Color(4, 100, 0));
+		g.fillOval(0,0,40,40);
 	}
 }

@@ -20,7 +20,7 @@ public class Player {
 		hitbox = new Rectangle(0,0,20,20);
 	}
 	public void update(double time, Ball[]balls, Set<Character>pressed) {
-		collideCheck(balls,pressed);
+		//collideCheck(balls,pressed);
 		if(x+radius > 800) {
 			x = 800 - radius;
 			this.xSpeed = 0;

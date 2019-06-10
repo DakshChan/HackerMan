@@ -1,12 +1,15 @@
-package src;
-
 import java.awt.CardLayout;
 import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+
+
 public class Display {
+
+	boolean mini1 = false;
+
 	public static final String MAINPANEL = "Main Panel";
 	public static final String SECONDPANEL = "Secondary Panel";
 	public static final String THIRDPANEL = "Third Panel";

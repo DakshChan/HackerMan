@@ -1,6 +1,6 @@
 /**
  * Wall.java
- * Version 1.0
+ * Version 1.1
  * Author: @ Jordan A.
  * @ 05/30
  * A class for walls
@@ -15,8 +15,8 @@ class Wall extends Entity{
   
   Image sprite;
     
-  Wall(int x, int y, int facing, int size, String name){
-    super(x, y, facing, size);
+  Wall(int x, int y, int facing,  String name){
+    super(x, y, facing);
     loadSprite(name);
   }
   
@@ -28,11 +28,11 @@ class Wall extends Entity{
     }
     
     // scales the image up to the screen size
-    sprite = sprite.getScaledInstance(Size, Size, Image.SCALE_SMOOTH);
+    sprite = sprite.getScaledInstance(Entity.Size, Entity.Size, Image.SCALE_SMOOTH);
     
   }
   
-  void drawSelf(Graphics g){
+  public void drawSelf(Graphics g){
     g.drawImage(sprite, x, y, null);
   }
 }

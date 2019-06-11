@@ -1,4 +1,4 @@
-//30x30 maps
+//20x20 maps
 
 import java.io.File;
 import java.util.Scanner;

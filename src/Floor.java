@@ -1,7 +1,7 @@
-/**
+/*
  * Floor.java
- * Version 1.1
- * Authors: @ Jordan A. @ Daksh M
+ * Version 1.2
+ * Authors: @ Jordan A.
  * @ 05/30
  * A class for floors
  */
@@ -13,14 +13,14 @@ import javax.imageio.*;
 
 class Floor extends Entity{
   
-  Image sprite;
+  private Image sprite;
     
   Floor(int x, int y, int facing, String name){
     super(x, y, facing);
     loadSprite(name);
   }
   
-  void loadSprite(String name){
+  private void loadSprite(String name){
     try {
       sprite = ImageIO.read(new File(name));
     } catch(Exception e) {

@@ -1,12 +1,9 @@
-import javafx.scene.layout.Border;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.function.Consumer;
 
 public class MapCreator {
 	public static void main(String[] args){
@@ -41,11 +38,11 @@ class Panel extends JFrame {
 		setLayout(new BorderLayout());
 		entityMeta = new String[3][];
 		//Guards
-		entityMeta[0] = new String[]{"Facing","Path"};
+		entityMeta[0] = new String[]{"Facing/int","Path/pair"};
 		//LaserNode
-		entityMeta[1] = new String[]{"Facing"};
+		entityMeta[1] = new String[]{"Facing/int"};
 		//Flooring
-		entityMeta[2] = new String[]{"Facing","Image name"};
+		entityMeta[2] = new String[]{"Facing/int","Image name/string"};
 
 		entityTypes = new String[]{"guard","lasernode","flooring"};
 		add(new EntityDisplay(this.entities,this.currentEntity),BorderLayout.CENTER);
@@ -124,26 +121,22 @@ class ImagePanel extends JPanel{
 }
 
 
-class EntitySelector extends JPanel implements ActionListener{
+class EntitySelector extends JPanel{
 	String[] entityTypes;
 	String[][] entityMeta;
 	public EntitySelector(String[] entityTypes,String[][] entityMeta) {
 		this.entityTypes = entityTypes;
 		this.entityMeta = entityMeta;
 		setLayout(new FlowLayout());
-		JComboBox comboBox = new JComboBox(entityTypes);
-		comboBox.addActionListener(this);
+		JTextField textField = new JTextField(30);
 
 		JPanel hey = new JPanel();
 
-		add(comboBox);
+		add(textField);
 		add(hey);
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		JComboBox comboBox = (JComboBox) e.getSource();
-		System.out.println(comboBox.getSelectedItem());
+	public String getText (){
 
 	}
 }
@@ -156,7 +149,6 @@ class GuardPath extends Entity {
 	@Override
 	public void drawSelf(Graphics g) {
 		g.setColor(new java.awt.Color(4, 100, 0));
-		System.out.println("x: " + this.x + " y: " + this.y);
 		g.fillOval(this.x,this.y,40,40);
 	}
 }

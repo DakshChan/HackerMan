@@ -1,36 +1,28 @@
-import java.awt.CardLayout;
+package src;
+
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-
-import javax.swing.JPanel;
 
 public class Terminal extends Entity{
 	static Image[] terminalTex;
     boolean hacked;
-    int type, termY, termX;
-    String mapContainedIn;
-	CardLayout layoutContainedIn;
-	JPanel panelContainedIn;
+    int type, points;
 
     // constructor for making a new terminal
-    Terminal(int x, int y, int facing, int type){
+	Terminal(int x, int y, int facing, int type) {
         super(x,y,facing);
-        this.hacked = false;
         this.type = type; // 0 for doors, 1 for lasers, 2 for lights
-    }
-    
-    public void startMiniGame(CardLayout layout, JPanel cardStack, String cardName) {
-    	layout.show(cardStack, cardName);
+        this.hacked = false;
     }
 
     // modifies nodes to delete the obstacle effect
-    public void setHacked(Entity[][] map, int range){
+    public void hack(Entity[][] map, int range){
     	this.hacked = true;
         int xUpper;
         int yUpper;
         int xLower;
         int yLower;
-
         //check to make sure that the node doesn't check outside the map
         if (this.x + range > map.length) {
             xUpper = map.length;
@@ -55,35 +47,42 @@ public class Terminal extends Entity{
         for(int vc = yLower; vc < yUpper; vc ++) {
             for(int hc = xLower; hc < xUpper; hc ++) {
                 if(this.type == 0) {
-//                	if(map[hc][vc] instanceof Door) {
-//                		
-//                	}
+                	if(map[hc][vc] instanceof Door) {
+                		((Door)map[hc][vc]).locked = false;
+                	}
                 }
                 else if(this.type == 1) {
                 	if(map[hc][vc] instanceof LaserNode) {
                 		((LaserNode)map[hc][vc]).hacked = true;
                 	}
                 }
-                else if(this.type == 2) {
-                	if(map[hc][vc] instanceof Guard) {
-                		((Guard)map[hc][vc]).hacked = true;
-                	}
-                }
             }
         }
     }
+    public void hack(Entity[][] guards) {
+    	this.hacked = true;
+		for(int vc = 0; vc < guards[0].length; vc ++) {
+			for(int hc = 0; hc < guards.length; hc ++) {
+				if(guards[hc][vc] instanceof Guard) {
+	        		((Guard)guards[hc][vc]).hacked = true;
+	        	}
+			}
+		}
+	}
 
     @Override
     public void drawSelf(Graphics g) {
-    	if(this.type == 0) {
-        	
-        }
-        else if(this.type == 1) {
-        	
-        }
-        else if(this.type == 2) {
-        	
-        }
+//    	if(this.type == 0) {
+//        	
+//        }
+//        else if(this.type == 1) {
+//        	
+//        }
+//        else if(this.type == 2) {
+//        	
+//        }
+    	g.setColor(Color.CYAN);
+    	g.fillRect(x*Size, y*Size, Size, Size);
     }
 
 }

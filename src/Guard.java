@@ -1,3 +1,5 @@
+package src;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -21,10 +23,6 @@ public class Guard extends Obstacle{
 		this.reverse = false;
 		this.sightLine = new Rectangle();
 		this.path = path;
-	}
-	@Override
-	public void killPlayer(){
-		//both the guard hitbox and sight hitbow will kill player
 	}
 	public Pair findDist(Pair target) {
 		return new Pair(target.x*Size - this.xPixels, target.y*Size - this.yPixels);
@@ -140,6 +138,12 @@ public class Guard extends Obstacle{
 			this.sightLine.y = this.yPixels;
 			this.sightLine.width = this.xPixels - (xStop + 1)*Size;
 			this.sightLine.height = Size;
+		}
+	}
+	@Override
+	public void killPlayer(Player p, MapPanel map){
+		if(this.hitbox.intersects(p.hitbox) || this.sightLine.intersects(p.hitbox)) {
+			map.ingame = false;
 		}
 	}
 	@Override

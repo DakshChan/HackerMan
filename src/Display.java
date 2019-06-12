@@ -4,23 +4,22 @@ import java.awt.CardLayout;
 import java.awt.Toolkit;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 public class Display {
-	public static final String MAINPANEL = "Main Panel";
-	public static final String SECONDPANEL = "Secondary Panel";
 	
 	public static void main(String[] args) {
 		GameWindow window = new GameWindow();
 		CardLayout savedLayout = new CardLayout();
-		JPanel cardStack = new JPanel(savedLayout);
-		Entity[][] map = new Entity[16][16];
-		Entity[][] laser = new Entity[16][16];
-		Guard[] guards = new Guard[8];
+		StackPanel cardStack = new StackPanel(savedLayout);
 		Entity.Size = Toolkit.getDefaultToolkit().getScreenSize().height/16;
 		Player.bound = Toolkit.getDefaultToolkit().getScreenSize().height;
 		int x = 6;
 		int y = 6;
+		String str1 = "map1";
+		String str2 = "map2";
+		Entity[][] map = new Entity[16][16];
+		Entity[][] empty = new Entity[16][16];
+		Guard[] guards = new Guard[8];
 		Pair[] path = new Pair[4];
 		path[0] = new Pair(x,y);
 		path[1] = new Pair(x,y-5);
@@ -32,11 +31,13 @@ public class Display {
 		map[0][7] = new LaserNode(0, 7, 0);
 		map[7][13] = new LaserNode(7, 13, 0);
 		map[4][7] = new Terminal(4, 7, 0, 0);
-		Player p = new Player(1,1,0);
-		MapPanel mainMap = new MapPanel(map, laser, guards,p);
-		JPanel second = new JPanel();
-		cardStack.add(mainMap, MAINPANEL);	 
-		cardStack.add(second, SECONDPANEL);	 
+		map[7][7] = new WarpTile(7, 7, 0, str2, 1,1);
+		MapPanel mainMap = new MapPanel(map, guards,cardStack);
+		mainMap.player.x = 2*Entity.Size;
+		mainMap.player.y = Entity.Size;
+		MapPanel second = new MapPanel(empty,guards,cardStack);
+		cardStack.addNamedComponent(mainMap, str1);
+		cardStack.addNamedComponent(second, str2);
 		window.add(cardStack);
 		window.pack();
 		window.setVisible(true);
@@ -46,19 +47,18 @@ public class Display {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		map[7][7] = new WarpTile(7, 7, 0, SECONDPANEL);
 		((WarpTile) map[7][7]).warp = true;
 		mainMap.updateMap(map);
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		((WarpTile) map[7][7]).warp = false;
-		mainMap.updateMap(map);
-		savedLayout.show(cardStack, MAINPANEL);
-		mainMap.requestFocusInWindow();
+		//savedLayout.show(cardStack, str1);
+		//mainMap.requestFocusInWindow();
+		//((LaserNode)map[7][0]).hacked = true;
+		//mainMap.updateMap(map);
 		 
 	}
 }

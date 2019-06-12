@@ -1,3 +1,5 @@
+package src;
+
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -31,20 +33,23 @@ public class SnakePanel extends JPanel implements KeyListener, ActionListener {
 	int snakeSize;
 	boolean inGame;
 	String connectedMapName;
+	JPanel connectedMap;
 	CardLayout layoutContainedIn;
+	Timer t;
 
-	SnakePanel(String connectedMapName, CardLayout layoutContainedIn) {
+	SnakePanel(String connectedMapName, CardLayout layoutContainedIn, JPanel connectedMap) {
 		pressedKey = KeyEvent.VK_DOWN;
 		snakeSize = 3;
 		inGame = true;
 		this.connectedMapName = connectedMapName;
 		this.layoutContainedIn = layoutContainedIn;
+		this.connectedMap = connectedMap;
 		setFocusable(true);
 		setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
 		setBackground(Color.black);
 		addKeyListener(this);
-		Timer t = new Timer(100, this);
-		t.start();
+		t = new Timer(100, this);
+		//t.start();
 		// Set snake starting coordinates.
 		for (int i = 0; i < snakeSize; i++) {
 			yCoor[i] = 140 - (i * 30);
@@ -85,6 +90,8 @@ public class SnakePanel extends JPanel implements KeyListener, ActionListener {
 	}
 	public void quitGame() {
 		layoutContainedIn.show(this.getParent(), this.connectedMapName);
+		connectedMap.requestFocusInWindow();
+		layoutContainedIn.removeLayoutComponent(this);
 	}
 
 	public void actionPerformed(ActionEvent e) {

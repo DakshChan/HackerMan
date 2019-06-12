@@ -1,79 +1,103 @@
+package src;
+
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.Set;
 
-public class Player {
-	double x;
+public class Player extends Entity{
 	double xSpeed;
-	double y; 
 	double ySpeed;
-	int radius;
-	Rectangle hitbox;
+	static int bound;
+	static Image[] playerTex;
+	Rectangle interactBox;
 	
-	public Player() {
-		x = 500;
-		y = 400;
-		xSpeed = 0.0;
-		ySpeed = 0.0;
-		radius = 20;
-		hitbox = new Rectangle(0,0,20,20);
+	public Player(int x, int y, int facing) {
+		super(x, y, facing);
+		//this.setInteractBox();
 	}
-	public void update(double time, Ball[]balls, Set<Character>pressed) {
-		//collideCheck(balls,pressed);
-		if(x+radius > 800) {
-			x = 800 - radius;
-			this.xSpeed = 0;
+	public void update(Set<Character>pressed) {
+		if(x+Size > bound) {
+			x = bound - Size;
+			xSpeed = 0;
 		}
 		else if(x < 0) {
 			x = 0;
-			this.xSpeed = 0;
+			xSpeed = 0;
 		}
 		else if(pressed.contains('a')) {
-			xSpeed = -0.3;
+			xSpeed = -1;
+			this.facing = 4;
 		}
 		else if(pressed.contains('d')) {
-			xSpeed = 0.3;
+			xSpeed = 1;
+			this.facing = 2;
 		}
 		else {
-			this.xSpeed = 0;
+			xSpeed = 0;
 		}
-		if(y+radius > 600) {
-			y = 600 - radius;
-			this.ySpeed = 0;
+		if(y+Size > bound) {
+			y = bound - Size;
+			ySpeed = 0;
 		}
 		else if(y < 0) {
 			y = 0;
-			this.ySpeed = 0;
+			ySpeed = 0;
 		}
 		else if(pressed.contains('w')) {
-			ySpeed = -0.3;
+			ySpeed = -1;
+			this.facing = 1;
 		}
 		else if(pressed.contains('s')) {
-			ySpeed = 0.3;
+			ySpeed = 1;
+			this.facing = 3;
 		}
 		else {
-			this.ySpeed = 0;
+			ySpeed = 0;
 		}
 		
-		x += xSpeed*time;
-		y += ySpeed*time;
-		hitbox.x = (int)x;
-		hitbox.y = (int)y;
+		x += xSpeed;
+		y += ySpeed;
+		hitbox.x = this.x;
+		hitbox.y = this.y;
 	}
-	//ignore this part
-//	public void collideCheck(Ball[]balls, Set<Character>pressed) {
-//		for(int c = 0; c < balls.length; c++) {
-//			if(this.hitbox.intersects(balls[c].hitbox)) {
-//				pressed.clear();
-//				balls[c].bounceX();
-//				balls[c].bounceY();
-//			}
-//		}
-//	}
+	public void setInteractBox() {
+		if (this.facing == 1) {
+			
+		}
+		else if (this.facing == 2) {
+			
+		}
+		else if (this.facing == 3) {
+			
+		}
+		else if (this.facing == 4) {
+			
+		}
+		
+	}
+	public void interact(Entity[][] map) {
+		for(int hc = 0; hc < map.length; hc ++) {
+			for(int vc = 0; vc < map[0].length; vc ++) {
+				if(map[hc][vc] instanceof Terminal && ((Terminal)map[hc][vc]).hacked == false && this.interactBox.intersects(map[hc][vc].hitbox)) {
+					if(((Terminal)map[hc][vc]).type == 2) {
+						((Terminal)map[hc][vc]).hack(map);
+					}
+					else {
+						((Terminal)map[hc][vc]).hack(map, 3);
+					}
+				}
+				if(map[hc][vc] instanceof WarpTile && this.hitbox.intersects(map[hc][vc].hitbox)) {
+					((WarpTile)map[hc][vc]).warp = true;
+				}
+			}
+		}
+	}
+	@Override
 	public void drawSelf(Graphics g) {
 		g.setColor(Color.CYAN);
-		g.fillOval((int)x, (int)y, radius, radius);
+		g.fillRect((int)x, (int)y, Size, Size);
 	}
 
 }

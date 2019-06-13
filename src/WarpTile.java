@@ -40,7 +40,7 @@ public class WarpTile extends Entity{
 		this.connectedY = connectedY;
 	}
 
-	public boolean isWarp() {
+	public boolean getWarp() {
 		return warp;
 	}
 

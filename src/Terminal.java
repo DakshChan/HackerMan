@@ -6,14 +6,17 @@ import java.awt.Image;
 
 public class Terminal extends Entity{
     private int type;
+    private int tier;
     private boolean hacked;
-    boolean minigameStart;
-	static Image[] terminalTex; 
+    private boolean minigameStart;
+    
+	public static Image[] terminalTex; 
 
     // constructor for making a new terminal
-	Terminal(int x, int y, int facing, int type) {
+	Terminal(int x, int y, int facing, int type, int tier) {
         super(x,y,facing);
         this.setType(type); // 0 for doors, 1 for lasers, 2 for lights
+        this.setTier(tier);
         this.setHacked(false);
     }
 	public boolean getHacked() {
@@ -31,7 +34,22 @@ public class Terminal extends Entity{
 	public void setType(int type) {
 		this.type = type;
 	}
-
+	
+	public int getTier() {
+		return tier;
+	}
+	
+	public void setTier(int tier) {
+		this.tier = tier;
+	}
+	
+	public boolean getMinigameStart() {
+		return minigameStart;
+	}
+	
+	public void setMinigameStart(boolean minigameStart) {
+		this.minigameStart = minigameStart;
+	}
     // modifies nodes to delete the obstacle effect
     public void hack(Entity[][] input) {
 		this.setHacked(true);

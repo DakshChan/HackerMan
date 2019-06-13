@@ -24,7 +24,7 @@ public class Obstacle extends Entity{
 	}
 	public void killPlayer(Player p, MapPanel map) {
 		if(this.getHitbox().intersects(p.getHitbox())) {
-			map.ingame = false;
+			map.setIngame(false);
 		}
 	}
 }

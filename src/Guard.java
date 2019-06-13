@@ -36,19 +36,19 @@ public class Guard extends Obstacle{
 		}
 		Pair dist = findDist(path[index]);
 		if (dist.x > 0) {
-			this.xPixels += Size/8;
+			this.xPixels += Size/10;
 			this.setFacing(2);
 		} 
 		else if (dist.x < 0) {
-			this.xPixels -= Size/8;
+			this.xPixels -= Size/10;
 			this.setFacing(4);
 		} 
 		else if (dist.y > 0) {
-			this.yPixels += Size/8;
+			this.yPixels += Size/10;
 			this.setFacing(3);
 		} 
 		else if (dist.y < 0) {
-			this.yPixels -= Size/8;
+			this.yPixels -= Size/10;
 			this.setFacing(1);
 		}
 		if(Math.abs(dist.x) <= 5 && Math.abs(dist.y) <= 5) {
@@ -153,7 +153,7 @@ public class Guard extends Obstacle{
 	@Override
 	public void killPlayer(Player p, MapPanel map){
 		if(this.getHitbox().intersects(p.getHitbox()) || this.sightLine.intersects(p.getHitbox())) {
-			map.ingame = false;
+			map.setIngame(false);
 		}
 	}
 	@Override

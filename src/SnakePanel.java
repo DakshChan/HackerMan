@@ -1,5 +1,6 @@
 package src;
 
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -27,23 +28,22 @@ public class SnakePanel extends JPanel implements KeyListener, ActionListener {
 	private int apple_x, apple_y;
 
 	/* Pressed Key. */
-	int pressedKey;
-	int oldPressedKey;
-	int snakeSize;
-	boolean inGame;
-	String connectedMapName;
-	Timer t;
+	private int pressedKey;
+	private int snakeSize;
+	private int pointsReq;
+	private boolean inGame;
+	private String connectedMap;
+	private Timer t;
 
 	SnakePanel() {
 		pressedKey = KeyEvent.VK_DOWN;
 		snakeSize = 3;
-		inGame = true;
+		setInGame(true);
 		setFocusable(true);
 		setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
 		setBackground(Color.black);
 		addKeyListener(this);
-		t = new Timer(100, this);
-		//t.start();
+		setT(new Timer(100, this));
 		// Set snake starting coordinates.
 		for (int i = 0; i < snakeSize; i++) {
 			yCoor[i] = 140 - (i * 30);
@@ -54,7 +54,7 @@ public class SnakePanel extends JPanel implements KeyListener, ActionListener {
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		if (inGame) {
+		if (getInGame()) {
 			/* Draw apple. */
 			g.setColor(Color.red);
 			g.fillRect(apple_x, apple_y, TILE_SIZE, TILE_SIZE);
@@ -76,13 +76,48 @@ public class SnakePanel extends JPanel implements KeyListener, ActionListener {
 			g.setColor(Color.white);
 			g.setFont(new Font("Comic Sans", Font.BOLD, 20));
 			g.drawString(("Game Over! You ate " + (getScore()) + " apples!"), BOARD_WIDTH / 4, BOARD_HEIGHT / 2);
-			g.drawString("Press space to exit", BOARD_WIDTH / 4 + 20, BOARD_HEIGHT / 2 + 30);
-			if(pressedKey == KeyEvent.VK_SPACE) {
-				quitGame();
+			if(gameWon(pointsReq) == true) {
+				g.drawString("Press space to exit", BOARD_WIDTH / 4 + 20, BOARD_HEIGHT / 2 + 30);
+				if(pressedKey == KeyEvent.VK_SPACE) {
+					quitGame();
+				}
+			}
+			else {
+				g.drawString("Your score was too low", BOARD_WIDTH / 4 + 20, BOARD_HEIGHT / 2 + 30);
+				g.drawString("Press space to retry", BOARD_WIDTH / 4 + 20, BOARD_HEIGHT / 2 + 60);
+				if(pressedKey == KeyEvent.VK_SPACE) {
+					resetGame();
+				}
 			}
 		}
 	}
+	public boolean gameWon(int points) {
+		if((snakeSize - 3) < points) {
+			return false;
+		}
+		else {
+			return true;
+		}
+		
+	}
 	public void quitGame() {
+		getT().stop();
+		CardLayout layout = (CardLayout)this.getParent().getLayout();
+		StackPanel parent = (StackPanel)this.getParent();
+		layout.show(parent, getConnectedMap());
+		((JPanel)parent.getComponentByName(getConnectedMap())).requestFocusInWindow();
+	}
+	
+	public void resetGame() {
+		setInGame(true);
+		pressedKey = KeyEvent.VK_DOWN;
+		snakeSize = 3;
+		// Set snake starting coordinates.
+		for (int i = 0; i < snakeSize; i++) {
+			yCoor[i] = 140 - (i * 30);
+			xCoor[i] = 140;
+		}
+		spawnAppleCoor();
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -95,8 +130,6 @@ public class SnakePanel extends JPanel implements KeyListener, ActionListener {
 	/* Saves pressedKeyCode to pressedKey. */
 	@Override
 	public void keyPressed(KeyEvent e) {
-//		System.out.println("key was pressed");
-		oldPressedKey = pressedKey;
 		pressedKey = e.getKeyCode();
 	}
 
@@ -107,12 +140,12 @@ public class SnakePanel extends JPanel implements KeyListener, ActionListener {
 	private void checkTile() {
 		/* Check if outside of wall. */
 		if (xCoor[0] > BOARD_WIDTH || xCoor[0] < 0 || yCoor[0] > BOARD_HEIGHT || yCoor[0] < 0) {
-			inGame = false;
+			setInGame(false);
 		}
 		/* Check for collisions. */
 		for (int i = 1; i < xCoor.length; i++) {
 			if (xCoor[0] == xCoor[i] && yCoor[0] == yCoor[i]) {
-				inGame = false;
+				setInGame(false);
 			}
 		}
 		/* Check for apples. */
@@ -158,6 +191,38 @@ public class SnakePanel extends JPanel implements KeyListener, ActionListener {
 
 	private String getScore() {
 		return "" + (snakeSize - 3);
+	}
+
+	public String getConnectedMap() {
+		return connectedMap;
+	}
+
+	public void setConnectedMap(String connectedMap) {
+		this.connectedMap = connectedMap;
+	}
+
+	public Timer getT() {
+		return t;
+	}
+
+	public void setT(Timer t) {
+		this.t = t;
+	}
+
+	public boolean getInGame() {
+		return inGame;
+	}
+
+	public void setInGame(boolean inGame) {
+		this.inGame = inGame;
+	}
+
+	public int getPointsReq() {
+		return pointsReq;
+	}
+
+	public void setPointsReq(int pointsReq) {
+		this.pointsReq = pointsReq;
 	}
 
 }

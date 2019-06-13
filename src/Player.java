@@ -34,11 +34,11 @@ public class Player extends Entity{
 			xSpeed = 0;
 		}
 		else if(pressed.contains('a')) {
-			xSpeed = -Size/8;
+			xSpeed = -Size/10;
 			this.setFacing(4);
 		}
 		else if(pressed.contains('d')) {
-			xSpeed = Size/8;
+			xSpeed = Size/10;
 			this.setFacing(2);
 		}
 		else {
@@ -53,11 +53,11 @@ public class Player extends Entity{
 			ySpeed = 0;
 		}
 		else if(pressed.contains('w')) {
-			ySpeed = -Size/8;
+			ySpeed = -Size/10;
 			this.setFacing(1);
 		}
 		else if(pressed.contains('s')) {
-			ySpeed = Size/8;
+			ySpeed = Size/10;
 			this.setFacing(3);
 		}
 		else {
@@ -101,10 +101,10 @@ public class Player extends Entity{
 				if (map[hc][vc] instanceof Terminal && ((Terminal) map[hc][vc]).getHacked() == false && this.interactBox.intersects(map[hc][vc].getHitbox())) {
 					if (((Terminal) map[hc][vc]).getType() == 2) {
 						((Terminal) map[hc][vc]).hack(guards);
-					}
-					else {
+					} else {
 						((Terminal) map[hc][vc]).hack(map);
 					}
+					((Terminal) map[hc][vc]).setMinigameStart(true);
 				}
 				if(map[hc][vc] instanceof WarpTile && this.getHitbox().intersects(map[hc][vc].getHitbox())) {
 					((WarpTile)map[hc][vc]).setWarp(true);

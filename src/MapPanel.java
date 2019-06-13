@@ -16,29 +16,30 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class MapPanel extends JPanel implements KeyListener, ActionListener {
-	boolean ingame;
-	boolean startMinigame;
-	StackPanel parent;
-	Entity[][] map;
-	Entity[][] lasers;
-	Entity[][] guards;
-	Player player;
-	Timer t;
-	Set<Character> pressed;
+	private boolean ingame;
+	private String selfName;
+	private StackPanel parent;
+	private Entity[][] map;
+	private Entity[][] lasers;
+	private Entity[][] guards;
+	private Player player;
+	private Timer t;
+	
+	public Set<Character> pressed;
 
 	/**
 	 * @param map
 	 * @param guards
 	 * @param parent
 	 */
-	MapPanel(Entity[][] map, Entity[][] guards, StackPanel parent) {
-		ingame = true;
-		startMinigame = false;
+	MapPanel(String selfName, Entity[][] map, Entity[][] guards, StackPanel parent) {
+		setIngame(true);
+		this.selfName = selfName;
 		this.map = map;
 		this.lasers = new Entity[map.length][map[0].length];
 		this.guards = guards;
 		this.parent = parent;
-		this.player = new Player(0, 0, 0);
+		this.setPlayer(new Player(0, 0, 0));
 		this.t = new Timer(16,this);
 		this.pressed = new HashSet<Character>();
 		addKeyListener(this);
@@ -47,11 +48,27 @@ public class MapPanel extends JPanel implements KeyListener, ActionListener {
 		requestFocusInWindow();
 		setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
 	}
+	
+	public Player getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
+
+	public boolean getIngame() {
+		return ingame;
+	}
+
+	public void setIngame(boolean ingame) {
+		this.ingame = ingame;
+	}
 
 	@Override
 	protected void paintComponent(Graphics g){
 		super.paintComponent(g);
-		if (ingame == true) {
+		if (getIngame() == true) {
 			for (int vc = 0; vc < map.length; vc++) {
 				for (int hc = 0; hc < map[0].length; hc++) {
 					if (map[hc][vc] instanceof LaserNode) {
@@ -71,7 +88,7 @@ public class MapPanel extends JPanel implements KeyListener, ActionListener {
 					}
 				}
 			}
-			player.drawSelf(g);
+			getPlayer().drawSelf(g);
 		} else {
 			this.setBackground(Color.BLACK);
 			g.setColor(Color.white);
@@ -79,10 +96,6 @@ public class MapPanel extends JPanel implements KeyListener, ActionListener {
 			g.drawString("Game Over!", Toolkit.getDefaultToolkit().getScreenSize().height / 4, Toolkit.getDefaultToolkit().getScreenSize().height / 2);
 		}
 		repaint();
-	}
-
-	public void updateMap(Entity[][] map) {
-		this.map = map;
 	}
 
 	@Override
@@ -121,7 +134,7 @@ public class MapPanel extends JPanel implements KeyListener, ActionListener {
 		else if (keyChar == 'd' && pressed.contains('d')) {
 			pressed.remove('d');
 		} 
-		else if (keyChar == 'e') {
+		else if (keyChar == 'e' && pressed.contains('e')) {
 			pressed.remove('e');
 		}
 	}
@@ -132,12 +145,24 @@ public class MapPanel extends JPanel implements KeyListener, ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (ingame == true) {
-			player.update(pressed, map, guards);
+		if (getIngame() == true) {
+			getPlayer().update(pressed, map, guards);
 			for (int vc = 0; vc < map.length; vc++) {
 				for (int hc = 0; hc < map[0].length; hc++) {
 					if (map[hc][vc] instanceof Terminal) {
-						map[hc][vc].rejectPlayer(player);
+						if(((Terminal)map[hc][vc]).getMinigameStart() == true) {
+							((Terminal)map[hc][vc]).setMinigameStart(false);
+							String minigameName = "minigame";
+							CardLayout savedLayout = (CardLayout) parent.getLayout();
+							savedLayout.show(parent, minigameName);
+							SnakePanel targetPanel = ((SnakePanel) parent.getComponentByName(minigameName));
+							targetPanel.resetGame();
+							targetPanel.getT().start();
+							targetPanel.setConnectedMap(selfName);
+							targetPanel.setPointsReq(((Terminal)map[hc][vc]).getTier()*3);
+							targetPanel.requestFocusInWindow();
+						}
+						map[hc][vc].rejectPlayer(getPlayer());
 					}
 					if (map[hc][vc] instanceof LaserNode) {
 						if (((LaserNode) map[hc][vc]).isHacked() == false) {
@@ -146,16 +171,16 @@ public class MapPanel extends JPanel implements KeyListener, ActionListener {
 						else if (((LaserNode) map[hc][vc]).isHacked() == true && ((LaserNode) map[hc][vc]).connected.size() > 0) {
 							((LaserNode) map[hc][vc]).disconnect(map, lasers);
 						}
-						map[hc][vc].rejectPlayer(player);
+						map[hc][vc].rejectPlayer(getPlayer());
 					} 
 					else if (map[hc][vc] instanceof WarpTile) {
-						if (((WarpTile) map[hc][vc]).isWarp() == true) {
+						if (((WarpTile) map[hc][vc]).getWarp() == true) {
 							pressed.clear();
 							((WarpTile) map[hc][vc]).setWarp(false);
 							CardLayout savedLayout = (CardLayout) parent.getLayout();
 							String mapname = ((WarpTile) map[hc][vc]).getConnectedMapName();
-							((MapPanel) parent.getComponentByName(mapname)).player.setX(((WarpTile) map[hc][vc]).getConnectedX());
-							((MapPanel) parent.getComponentByName(mapname)).player.setY(((WarpTile) map[hc][vc]).getConnectedY());
+							((MapPanel) parent.getComponentByName(mapname)).getPlayer().setX(((WarpTile) map[hc][vc]).getConnectedX());
+							((MapPanel) parent.getComponentByName(mapname)).getPlayer().setY(((WarpTile) map[hc][vc]).getConnectedY());
 							savedLayout.show(parent, mapname);
 							((JPanel) parent.getComponentByName(mapname)).requestFocusInWindow();
 						}
@@ -163,14 +188,13 @@ public class MapPanel extends JPanel implements KeyListener, ActionListener {
 					if (guards[hc][vc] != null) {
 						((Guard) guards[hc][vc]).followPath();
 						((Guard) guards[hc][vc]).setSightLine(map);
-						((Guard) guards[hc][vc]).killPlayer(player, this);
+						((Guard) guards[hc][vc]).killPlayer(getPlayer(), this);
 					}
 					if (lasers[hc][vc] instanceof LaserBeam) {
-						((LaserBeam) lasers[hc][vc]).killPlayer(player, this);
+						((LaserBeam) lasers[hc][vc]).killPlayer(getPlayer(), this);
 					}
 				}
 			}
 		}
 	}
-
 }

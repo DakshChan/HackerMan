@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.lang.invoke.ConstantCallSite;
 
 public class MapCreator {
 	public static void main(String[] args){
@@ -23,9 +24,6 @@ public class MapCreator {
 class Panel extends JFrame {
 	private int maxX,maxY;
 	Entity[][][] entities;
-	String[] entityTypes;
-	String[][] entityMeta;
-	Entity[] currentEntity = new Entity[1];
 	public Panel(){
 		entities = new Entity[3][16][16];
 		//this.entityTypes = entityTypes;
@@ -36,31 +34,35 @@ class Panel extends JFrame {
 		setSize(maxX,maxY);
 		setResizable(false);
 		setLayout(new BorderLayout());
-		entityMeta = new String[3][];
-		//Guards
-		entityMeta[0] = new String[]{"Facing/int","Path/pair"};
-		//LaserNode
-		entityMeta[1] = new String[]{"Facing/int"};
-		//Flooring
-		entityMeta[2] = new String[]{"Facing/int","Image name/string"};
+		EntitySelector selector = new EntitySelector();
+		add(selector,BorderLayout.EAST);
 
-		entityTypes = new String[]{"guard","lasernode","flooring"};
-		add(new EntityDisplay(this.entities,this.currentEntity),BorderLayout.CENTER);
-		add(new EntitySelector(this.entityTypes,entityMeta),BorderLayout.EAST);
+		String[][][] output = new String[1][16][16];
+		for (int i = 0; i < output.length; i++){
+			for (int j = 0; j < output.length; j++){
+				output[0][i][j] = "null";
+			}
+		}
+
+		add(new EntityDisplay(this.entities,selector,output),BorderLayout.CENTER);
+
 		setVisible(true);
+
 	}
 }
 
 class EntityDisplay extends JPanel implements MouseListener{
 	Entity[][][] entities;
-	Entity[] currentEntity;
-	public EntityDisplay(Entity[][][] entities,Entity[] currentEntity) {
+	String[][][] output;
+	EntitySelector selector;
+	public EntityDisplay(Entity[][][] entities,EntitySelector selector,String[][][] output) {
 		this.entities = entities;
-		this.currentEntity = currentEntity;
+		this.selector = selector;
+		this.output = output;
 		setLayout(new GridLayout(16,16));
 		for (int i = 0; i < 16; i++) {
 			for (int j = 0; j < 16; j++) {
-				ImagePanel temp = new ImagePanel(entities, currentEntity, i, j);
+				ImagePanel temp = new ImagePanel(entities, i, j);
 				add(temp);
 			}
 		}
@@ -71,8 +73,17 @@ class EntityDisplay extends JPanel implements MouseListener{
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		ImagePanel selected = (ImagePanel) getComponentAt(e.getPoint());
-		this.entities[0][selected.x][selected.y] = new GuardPath();
 		System.out.println("Clicked on " + selected.x + " " + selected.y + " @ " + selected.getLocation().getX() + " " + selected.getLocation().getY());
+		this.entities[0][selected.x][selected.y] = MapLoader.entityParser(selector.getText(),0,0);
+		this.output[0][selected.x][selected.y] = selector.getText();
+
+		System.out.println("\n\n\n\n\n");
+		for (int i = 0; i < 16; i++){
+			for (int j = 0; j < 16; j++){
+				System.out.print(output[0][i][j]+" ");
+			}
+			System.out.println();
+		}
 	}
 
 	@Override
@@ -98,12 +109,10 @@ class EntityDisplay extends JPanel implements MouseListener{
 
 class ImagePanel extends JPanel{
 	Entity[][][] entities;
-	Entity[] currentEntity;
 	int x;
 	int y;
-	public ImagePanel(Entity[][][] entities,Entity[] currentEntity,int x,int y){
+	public ImagePanel(Entity[][][] entities,int x,int y){
 		this.entities = entities;
-		this.currentEntity = currentEntity;
 		this.x = x;
 		this.y = y;
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -122,22 +131,18 @@ class ImagePanel extends JPanel{
 
 
 class EntitySelector extends JPanel{
-	String[] entityTypes;
-	String[][] entityMeta;
-	public EntitySelector(String[] entityTypes,String[][] entityMeta) {
-		this.entityTypes = entityTypes;
-		this.entityMeta = entityMeta;
-		setLayout(new FlowLayout());
-		JTextField textField = new JTextField(30);
-
-		JPanel hey = new JPanel();
-
+	JTextField textField;
+	JLabel options;
+	public EntitySelector() {
+		setLayout(new GridLayout(8,1));
+		textField = new JTextField(40);
 		add(textField);
-		add(hey);
+		options = new JLabel("hi");
+		add(options);
+		//add();
 	}
-
-	public String getText (){
-
+	public String getText(){
+		return textField.getText();
 	}
 }
 

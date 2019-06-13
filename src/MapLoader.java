@@ -37,7 +37,7 @@ public class MapLoader {
 		// terminal/0/0
 		if(temp[0].equals("terminal")){
 			System.out.println("terminal");
-			entity = new Terminal(i,j,Integer.parseInt(temp[1]),Integer.parseInt(temp[2]));
+			entity = new Terminal(i,j,Integer.parseInt(temp[1]),Integer.parseInt(temp[2]),0);
 		}
 		// lasernode/int facing
 		// lasernode/0

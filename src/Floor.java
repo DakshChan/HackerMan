@@ -34,6 +34,6 @@ class Floor extends Entity{
 
   @Override
   public void drawSelf(Graphics g){
-    g.drawImage(sprite, x, y, null);
+    g.drawImage(sprite, this.getX(), this.getY(), null);
   }
 }

@@ -1,5 +1,3 @@
-package src;
-
 import java.awt.Toolkit;
 import java.util.Random;
 

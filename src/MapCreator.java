@@ -32,6 +32,7 @@ class Panel extends JFrame {
 		setTitle("Map Creator");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(maxX,maxY);
+		Entity.Size = maxY/16;
 		setResizable(false);
 		setLayout(new BorderLayout());
 		EntitySelector selector = new EntitySelector();
@@ -74,8 +75,12 @@ class EntityDisplay extends JPanel implements MouseListener{
 	public void mouseClicked(MouseEvent e) {
 		ImagePanel selected = (ImagePanel) getComponentAt(e.getPoint());
 		System.out.println("Clicked on " + selected.x + " " + selected.y + " @ " + selected.getLocation().getX() + " " + selected.getLocation().getY());
-		this.entities[0][selected.x][selected.y] = MapLoader.entityParser(selector.getText(),0,0);
-		this.output[0][selected.x][selected.y] = selector.getText();
+		if (!selector.getText().equals("guard")) {
+			this.entities[0][selected.x][selected.y] = MapLoader.entityParser(selector.getText(), 0, 0);
+			this.output[0][selected.x][selected.y] = selector.getText();
+		} else {
+			this.entities[1][selected.x][selected.y] = new GuardPath();
+		}
 
 		System.out.println("\n\n\n\n\n");
 		for (int i = 0; i < 16; i++){
@@ -137,7 +142,17 @@ class EntitySelector extends JPanel{
 		setLayout(new GridLayout(8,1));
 		textField = new JTextField(40);
 		add(textField);
-		options = new JLabel("hi");
+		options = new JLabel("terminal");
+		add(options);
+		options = new JLabel("lasernode");
+		add(options);
+		options = new JLabel("warp/mapname/connected x/connected y");
+		add(options);
+		options = new JLabel("wall");
+		add(options);
+		options = new JLabel("null");
+		add(options);
+		options = new JLabel("guard");
 		add(options);
 		//add();
 	}
@@ -145,6 +160,7 @@ class EntitySelector extends JPanel{
 		return textField.getText();
 	}
 }
+
 
 class GuardPath extends Entity {
 	GuardPath(){
@@ -154,6 +170,6 @@ class GuardPath extends Entity {
 	@Override
 	public void drawSelf(Graphics g) {
 		g.setColor(new java.awt.Color(4, 100, 0));
-		g.fillOval(this.x,this.y,40,40);
+		g.fillOval(this.getX(),this.getY(),40,40);
 	}
 }

@@ -1,5 +1,0 @@
-terminal/0/0/0 null null
-floorgreen floorgreen floorgreen
-null null guard/gpath
-guard/gpath null lasernode/0
-gpath/[x,y][x,y]

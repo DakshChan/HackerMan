@@ -6,8 +6,7 @@
  * A class for walls
  */
 
-import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.*;
 import java.io.*;
 import javax.imageio.*;
 
@@ -15,9 +14,9 @@ class Wall extends Entity{
   
   Image sprite;
     
-  Wall(int x, int y, int facing,  String name){
+  Wall(int x, int y, int facing){
     super(x, y, facing);
-    loadSprite(name);
+    //loadSprite(name);
   }
   
   void loadSprite(String name){
@@ -33,6 +32,7 @@ class Wall extends Entity{
   }
   
   public void drawSelf(Graphics g){
-    g.drawImage(sprite, this.getX(), this.getY(), null);
+    g.setColor(Color.BLACK);
+    g.drawRect(this.getX(), this.getY(), Entity.Size,Entity.Size);
   }
 }

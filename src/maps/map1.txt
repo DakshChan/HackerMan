@@ -1,0 +1,16 @@
+null wall null null null wall null wall null null null null null null null terminal
+null wall null wall null wall null wall null null null null null null null null
+null wall null wall null wall null wall null null null null null null null null
+null wall null wall null wall null wall null null null null null null null null
+null wall null wall null wall null wall null null null null null null null null
+null wall null wall null wall null wall null null null null null null null null
+null wall null wall null wall null wall null null null null null null null null
+null wall null wall null wall null wall null null null null null null null null
+null wall null wall null wall null wall null null null null null null null null
+null wall null wall null wall null wall null null null null null null null null
+null wall null wall null wall null wall null null null null null null null null
+null wall null wall null wall null wall null null null null null null null null
+null null null wall null wall null wall null null null null null null null null
+null null null wall null wall null wall null null null null null null null null
+lasernode null lasernode wall null wall wall wall null null null null null null null null
+warp/map2/0/0 null lasernode wall null null null null null null null null null null null null

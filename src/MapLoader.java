@@ -1,7 +1,5 @@
 //16x16 maps
 
-import com.sun.xml.internal.ws.message.PayloadElementSniffer;
-
 import java.io.File;
 import java.util.Scanner;
 

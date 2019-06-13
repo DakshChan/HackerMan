@@ -11,7 +11,15 @@ public class Guard extends Obstacle{
 	private boolean reverse;
 	private Rectangle sightLine;
 	private Pair[] path;
-	public static Image[] guardTex;
+	
+	public static Image[] guardTex = new Image[4];
+	
+	/**
+	 * @param x, see super constructor
+	 * @param y, see super constructor
+	 * @param facing, see super constructor
+	 * @param path, an arraylist of the path the guard will follow
+	 */
 	Guard(int x, int y, int facing, Pair[] path) {
 		super(x, y, facing);
 		this.index = 0;
@@ -22,9 +30,16 @@ public class Guard extends Obstacle{
 		this.sightLine = new Rectangle();
 		this.path = path;
 	}
+	/**
+	 * @param target, the x and y coordinates of a position on the map
+	 * @return x and y distance of guard from target
+	 */
 	public Pair findDist(Pair target) {
 		return new Pair(target.x*Size - this.xPixels, target.y*Size - this.yPixels);
 	}
+	/**
+	 * Makes guard follow its path
+	 */
 	public void followPath() {
 		if(index >= path.length-1) {
 			reverse = true;
@@ -68,6 +83,12 @@ public class Guard extends Obstacle{
 		getHitbox().x = this.xPixels;
 		getHitbox().y = this.yPixels;
 	}
+	/**
+	 * sets the guard's line of sight
+	 * line of sight is blocked by other entities
+	 * line of sight is reduced when hacked
+	 * @param grid, an entity array, represents the map the guard is in
+	 */
 	public void setSightLine(Entity[][]grid) {
 		int xStop; 
 		int yStop;
@@ -122,7 +143,6 @@ public class Guard extends Obstacle{
 			this.sightLine.y = this.yPixels + Size;
 			this.sightLine.width = Size;
 			this.sightLine.height = yStop*Size - (this.yPixels + Size);
-			//System.out.println(yStop);
 		} 
 		else if (this.getFacing() == 4) {
 			if(this.isHacked()) {
@@ -148,16 +168,33 @@ public class Guard extends Obstacle{
 			this.sightLine.height = Size;
 		}
 	}
+	/* (non-Javadoc)
+	 * @see src.Obstacle#killPlayer(src.Player, src.MapPanel)
+	 */
 	@Override
 	public void killPlayer(Player p, MapPanel map){
 		if(this.getHitbox().intersects(p.getHitbox()) || this.sightLine.intersects(p.getHitbox())) {
 			map.setIngame(false);
 		}
 	}
+	/* (non-Javadoc)
+	 * @see src.Obstacle#drawSelf(java.awt.Graphics)
+	 */
 	@Override
 	public void drawSelf(Graphics g) {
-		g.setColor(Color.YELLOW);
+		Color overlayColor = new Color(255, 255, 5, 96);
+		g.setColor(overlayColor);
 		g.fillRect(this.sightLine.x, this.sightLine.y, this.sightLine.width, this.sightLine.height);
+		/*
+		 * switch(getFacing()) { case 1: g.drawImage(guardTex[0], this.xPixels,
+		 * this.yPixels, Entity.Size, Entity.Size, null); break; case 2:
+		 * g.drawImage(guardTex[1], this.xPixels, this.yPixels, Entity.Size,
+		 * Entity.Size, null); break; case 3: g.drawImage(guardTex[2], this.xPixels,
+		 * this.yPixels, Entity.Size, Entity.Size, null); break; case 4:
+		 * g.drawImage(guardTex[3], this.xPixels, this.yPixels, Entity.Size,
+		 * Entity.Size, null); break; default: g.drawImage(guardTex[0], this.xPixels,
+		 * this.yPixels, Entity.Size, Entity.Size, null); break; }
+		 */
 		g.setColor(Color.RED);
 		g.fillRect(this.xPixels, this.yPixels, Entity.Size, Entity.Size);
 	}

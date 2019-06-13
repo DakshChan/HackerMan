@@ -1,11 +1,10 @@
-//16x16 maps
-
 import java.io.File;
 import java.util.Scanner;
 
 public class MapLoader {
 	public static Entity[][][] loadMap(String input)throws Exception{
-		Scanner file = new Scanner(new File(input+".txt"));
+		String path = "C:\\Users\\daksh\\IdeaProjects\\HackerMan\\src\\maps\\";
+		Scanner file = new Scanner(new File(path+input+".txt"));
 		int amount = 0;
 		while(file.hasNext()) {
 			file.nextLine();
@@ -13,7 +12,7 @@ public class MapLoader {
 		}
 		file.close();
 		String[][][] stringMap = new String[2][amount][amount];
-		file = new Scanner(new File(input));
+		file = new Scanner(new File(path+input+".txt"));
 		for(int i = 0; i < amount; i++){
 			for (int j = 0; j < amount; j++){
 				stringMap[0][i][j] = file.next();
@@ -21,31 +20,34 @@ public class MapLoader {
 		}
 		file.close();
 
-		file = new Scanner(new File(input + "-g.txt"));
-		amount = 0;
+		file = new Scanner(new File(path + input + "-g.txt"));
+		int amount2 = 0;
 		while (file.hasNextLine()){
 			file.nextLine();
-			amount++;
+			amount2++;
 		}
 		file.close();
 
-		String[] guardsRaw = new String[amount];
+		String[] guardsRaw = new String[amount2];
 
-		file = new Scanner(new File(input + "-g.txt"));
+		file = new Scanner(new File(path + input + "-g.txt"));
 		for (int i = 0; i < guardsRaw.length; i++){
 			guardsRaw[i] = file.nextLine();
 		}
+		file.close();
 
-		String[][] guardPath = new String[amount][];
+		String[][] guardPath = new String[amount2][];
 		for (int i = 0; i < guardPath.length; i++){
 			guardPath[i] = guardsRaw[i].split("/");
 		}
 
-		Pair[][] guards = new Pair[amount][];
+		Pair[][] guards = new Pair[amount2][];
 		for (int i = 0; i < guards.length; i++){
 			guards[i] = new Pair[guardPath[i].length];
 			for (int j = 0; j < guards[i].length; j++){
-				String[] temp = guardPath[i][j].split(".");
+				System.out.println(guardPath[i][j]);
+				String[] temp = (guardPath[i][j]).split(",");
+				System.out.println(temp.length);
 				guards[i][j] = new Pair(Integer.parseInt(temp[0]),Integer.parseInt(temp[1]));
 			}
 		}
@@ -101,3 +103,4 @@ public class MapLoader {
 		return entity;
 	}
 }
+

@@ -33,6 +33,9 @@ public class SnakePanel extends JPanel implements KeyListener, ActionListener {
 	private String connectedMap;
 	private Timer t;
 
+	/**
+	 * constructor for snake game
+	 */
 	SnakePanel() {
 		pressedKey = KeyEvent.VK_DOWN;
 		snakeSize = 3;
@@ -50,6 +53,9 @@ public class SnakePanel extends JPanel implements KeyListener, ActionListener {
 		spawnAppleCoor();
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+	 */
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		if (getInGame()) {
@@ -89,6 +95,11 @@ public class SnakePanel extends JPanel implements KeyListener, ActionListener {
 			}
 		}
 	}
+	/**
+	 * checks if player won the minigame or not
+	 * @param points, point needed to win
+	 * @return true if points meets or exceed required, false if not
+	 */
 	public boolean gameWon(int points) {
 		if((snakeSize - 3) < points) {
 			return false;
@@ -98,6 +109,9 @@ public class SnakePanel extends JPanel implements KeyListener, ActionListener {
 		}
 		
 	}
+	/**
+	 * Exits the game by switching to a different panel
+	 */
 	public void quitGame() {
 		getT().stop();
 		CardLayout layout = (CardLayout)this.getParent().getLayout();
@@ -106,6 +120,9 @@ public class SnakePanel extends JPanel implements KeyListener, ActionListener {
 		((JPanel)parent.getComponentByName(getConnectedMap())).requestFocusInWindow();
 	}
 	
+	/**
+	 * resets the game to its initial state
+	 */
 	public void resetGame() {
 		setInGame(true);
 		pressedKey = KeyEvent.VK_DOWN;
@@ -118,21 +135,32 @@ public class SnakePanel extends JPanel implements KeyListener, ActionListener {
 		spawnAppleCoor();
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	public void actionPerformed(ActionEvent e) {
-//		System.out.println("action");
 		checkTile();
 		moveSnakeCoor();
 		repaint();
 	}
 
 	/* Saves pressedKeyCode to pressedKey. */
+	/* (non-Javadoc)
+	 * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
+	 */
 	@Override
 	public void keyPressed(KeyEvent e) {
 		pressedKey = e.getKeyCode();
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
+	 */
 	public void keyReleased(KeyEvent e) {}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
+	 */
 	public void keyTyped(KeyEvent e) {}
 
 	private void checkTile() {
@@ -162,6 +190,9 @@ public class SnakePanel extends JPanel implements KeyListener, ActionListener {
 		apple_y = ((r * TILE_SIZE));
 	}
 
+	/**
+	 * 
+	 */
 	private void moveSnakeCoor() {
 		/* Move coordinates up one in the matrix. */
 		for (int i = snakeSize; i > 0; i--) {
@@ -187,38 +218,65 @@ public class SnakePanel extends JPanel implements KeyListener, ActionListener {
 		}
 	}
 
+	/**
+	 * @return
+	 */
 	private String getScore() {
 		return "" + (snakeSize - 3);
 	}
 
+	/**
+	 * @return
+	 */
 	public String getConnectedMap() {
 		return connectedMap;
 	}
 
+	/**
+	 * @param connectedMap
+	 */
 	public void setConnectedMap(String connectedMap) {
 		this.connectedMap = connectedMap;
 	}
 
+	/**
+	 * @return
+	 */
 	public Timer getT() {
 		return t;
 	}
 
+	/**
+	 * @param t
+	 */
 	public void setT(Timer t) {
 		this.t = t;
 	}
 
+	/**
+	 * @return
+	 */
 	public boolean getInGame() {
 		return inGame;
 	}
 
+	/**
+	 * @param inGame
+	 */
 	public void setInGame(boolean inGame) {
 		this.inGame = inGame;
 	}
 
+	/**
+	 * @return
+	 */
 	public int getPointsReq() {
 		return pointsReq;
 	}
 
+	/**
+	 * @param pointsReq
+	 */
 	public void setPointsReq(int pointsReq) {
 		this.pointsReq = pointsReq;
 	}

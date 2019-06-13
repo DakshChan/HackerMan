@@ -5,16 +5,56 @@ import java.awt.Rectangle;
 import java.util.Set;
 
 public class Player extends Entity{
-	double xSpeed;
-	double ySpeed;
-	static int bound;
-	static Image[] playerTex;
-	Rectangle interactBox;
+	private double xSpeed;
+	private double ySpeed;
+	private Rectangle interactBox;
 	
+	public static int bound;
+	public static Image[] playerTex = new Image[4];
+	
+	/**
+	 * @param x, see super constructor
+	 * @param y, see super constructor
+	 * @param facing, see super constructor
+	 */
 	public Player(int x, int y, int facing) {
 		super(x, y, facing);
 		this.interactBox = new Rectangle();
 	}
+	/**
+	 * Standard getter for xSpeed
+	 * @return xSpeed, speed player moves horizontally
+	 */
+	public double getxSpeed() {
+		return xSpeed;
+	}
+	/**
+	 * Standard setter for xSpeed
+	 * @param xSpeed, new xSpeed
+	 */
+	public void setxSpeed(double xSpeed) {
+		this.xSpeed = xSpeed;
+	}
+	/**
+	 * Standard getter for ySpeed
+	 * @return ySpeed, speed player moves vertically
+	 */
+	public double getySpeed() {
+		return ySpeed;
+	}
+	/**
+	 * Standard setter for ySpeed
+	 * @param ySpeed, new ySpeed
+	 */
+	public void setySpeed(double ySpeed) {
+		this.ySpeed = ySpeed;
+	}
+	/**
+	 * Runs all other player actions from a single method
+	 * @param pressed, a list of keys that are pressed
+	 * @param map, a 2D entity array representing the map the player is in
+	 * @param guards, a 2D entity array containing guards
+	 */
 	public void update(Set<Character>pressed, Entity[][]map, Entity[][]guards) {
 		this.move(pressed);
 		this.setInteractBox();
@@ -22,50 +62,58 @@ public class Player extends Entity{
 			this.interact(map, guards);
 		}
 	}
+	/**
+	 * Moves the player
+	 * @param pressed, a list of keys that are pressed
+	 */
 	public void move(Set<Character>pressed) {
 		if(getX()+Size > bound) {
 			setX(bound - Size);
-			xSpeed = 0;
+			setxSpeed(0);
 		}
 		else if(getX() < 0) {
 			setX(0);
-			xSpeed = 0;
+			setxSpeed(0);
 		}
 		else if(pressed.contains('a')) {
-			xSpeed = -Size/10;
+			setxSpeed(-Size/10);
 			this.setFacing(4);
 		}
 		else if(pressed.contains('d')) {
-			xSpeed = Size/10;
+			setxSpeed(Size/10);
 			this.setFacing(2);
 		}
 		else {
-			xSpeed = 0;
+			setxSpeed(0);
 		}
 		if(getY()+Size > bound) {
 			setY(bound - Size);
-			ySpeed = 0;
+			setySpeed(0);
 		}
 		else if(getY() < 0) {
 			setY(0);
-			ySpeed = 0;
+			setySpeed(0);
 		}
 		else if(pressed.contains('w')) {
-			ySpeed = -Size/10;
+			setySpeed(-Size/10);
 			this.setFacing(1);
 		}
 		else if(pressed.contains('s')) {
-			ySpeed = Size/10;
+			setySpeed(Size/10);
 			this.setFacing(3);
 		}
 		else {
-			ySpeed = 0;
+			setySpeed(0);
 		}
-		setX((int)(getX() + xSpeed));
-		setY((int)(getY() + ySpeed));
+		setX((int)(getX() + getxSpeed()));
+		setY((int)(getY() + getySpeed()));
 		getHitbox().x = this.getX();
 		getHitbox().y = this.getY();
 	}
+	/**
+	 * Sets the interaction hitbox of the player
+	 * Interaction hitbox allows player to interact with other Entities
+	 */
 	public void setInteractBox() {
 		if (this.getFacing() == 1) {
 			this.interactBox.x = this.getX();
@@ -93,6 +141,12 @@ public class Player extends Entity{
 		}
 		
 	}
+	/**
+	 * Allows the player to interact with other entities on the map
+	 * Player can hack Terminals and activate WarpTiles to enter other maps
+	 * @param map, a 2D entity array representing the map the player is in
+	 * @param guards, a 2D entity array containing guards
+	 */
 	public void interact(Entity[][] map, Entity[][]guards) {
 		for(int vc = 0; vc < map.length; vc ++) {
 			for(int hc = 0; hc < map[0].length; hc ++) {
@@ -110,12 +164,22 @@ public class Player extends Entity{
 			}
 		}
 	}
+	/* (non-Javadoc)
+	 * @see src.Entity#drawSelf(java.awt.Graphics)
+	 */
 	@Override
 	public void drawSelf(Graphics g) {
+		/*
+		 * switch(getFacing()) { case 1: g.drawImage(playerTex[0], this.getX(),
+		 * this.getY(), Entity.Size, Entity.Size, null); break; case 2:
+		 * g.drawImage(playerTex[1], this.getX(), this.getY(), Entity.Size, Entity.Size,
+		 * null); break; case 3: g.drawImage(playerTex[2], this.getX(), this.getY(),
+		 * Entity.Size, Entity.Size, null); break; case 4: g.drawImage(playerTex[3],
+		 * this.getX(), this.getY(), Entity.Size, Entity.Size, null); break; default:
+		 * g.drawImage(playerTex[0], this.getX(), this.getY(), Entity.Size, Entity.Size,
+		 * null); break; }
+		 */
 		g.setColor(Color.MAGENTA);
-		g.fillRect((int)getX(), (int)getY(), Size, Size);
-		g.setColor(Color.YELLOW);
-		g.fillRect(interactBox.x, interactBox.y, interactBox.width, interactBox.height);
+		g.fillRect(getX(), getY(), Size, Size);
 	}
-
 }

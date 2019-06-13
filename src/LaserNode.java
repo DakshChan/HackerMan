@@ -6,14 +6,21 @@ import java.util.ArrayList;
 public class LaserNode extends Obstacle{
 	ArrayList<Pair> connected;
 	static Image LaserNTex;
+	/**
+	 * @param x, see super constructor
+	 * @param y, see super constructor
+	 * @param facing, see super constructor
+	 */
 	LaserNode(int x, int y, int facing) {
 		super(x, y, facing);
 		this.connected = new ArrayList<Pair>();
 	}
-	LaserNode(int x, int y, int facing, boolean hacked) {
-		super(x, y, facing, hacked);
-		this.connected = new ArrayList<Pair>();
-	}
+	/**
+	 * checks for other laserNodes in cardinal directions and created laserBeams between them
+	 * laserBeams are blocked by other entities
+	 * @param grid, a 2D array, represents the map the laserNode is in
+	 * @param laser, a separate 2D array that laserBeams are created in
+	 */
 	public void connect(Entity[][] grid, Entity[][] laser) {
 		int xUpper = grid.length;
 		int yUpper = grid[0].length;
@@ -83,6 +90,12 @@ public class LaserNode extends Obstacle{
 			}
 		}
 	}
+	/**
+	 * Disconnects laserNode from others when hacked
+	 * Removes laserBeams connected to the laserNode
+	 * @param grid, a 2D array, represents the map the laserNode is in
+	 * @param laser, a separate 2D array that laserBeams exist in
+	 */
 	public void disconnect(Entity[][] grid, Entity[][] laser) {
 		for(int c = 0; c < connected.size(); c++) {
 			Pair target = connected.get(c);
@@ -118,6 +131,9 @@ public class LaserNode extends Obstacle{
 		}
 		connected.clear();
 	}
+	/* (non-Javadoc)
+	 * @see src.Obstacle#drawSelf(java.awt.Graphics)
+	 */
 	@Override
 	public void drawSelf(Graphics g) {
 		g.setColor(Color.BLUE);

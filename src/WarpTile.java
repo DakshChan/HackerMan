@@ -1,25 +1,57 @@
+package src;
+
 import java.awt.Color;
 import java.awt.Graphics;
 
 public class WarpTile extends Entity{
-	String connectedMapName;
-	String componentID;
-	int connectedX;
-	int connectedY;
-	boolean warp;
+	private String connectedMapName;
+	private int connectedX;
+	private int connectedY;
+	private boolean warp;
 	
 	WarpTile(int x, int y, int facing, String connectedMapName, int connectedX, int connectedY) {
 		super(x, y, facing);
+		this.setConnectedMapName(connectedMapName);
+		this.setConnectedX(connectedX*Size);
+		this.setConnectedY(connectedY*Size);
+		this.setWarp(false);
+	}
+	public String getConnectedMapName() {
+		return connectedMapName;
+	}
+
+	public void setConnectedMapName(String connectedMapName) {
 		this.connectedMapName = connectedMapName;
-		this.connectedX = connectedX*Size;
-		this.connectedY = connectedY*Size;
-		this.warp = false;
+	}
+
+	public int getConnectedX() {
+		return connectedX;
+	}
+
+	public void setConnectedX(int connectedX) {
+		this.connectedX = connectedX;
+	}
+
+	public int getConnectedY() {
+		return connectedY;
+	}
+
+	public void setConnectedY(int connectedY) {
+		this.connectedY = connectedY;
+	}
+
+	public boolean isWarp() {
+		return warp;
+	}
+
+	public void setWarp(boolean warp) {
+		this.warp = warp;
 	}
 
 	@Override
 	public void drawSelf(Graphics g) {
 		g.setColor(Color.DARK_GRAY);
-		g.fillRect(this.x *Size, this.y*Size, Size, Size);
+		g.fillRect(this.getX() *Size, this.getY()*Size, Size, Size);
 	}
-	
+
 }

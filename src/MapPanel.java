@@ -1,53 +1,60 @@
+package src;
+
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
-public class MapPanel extends JPanel implements KeyListener {
+public class MapPanel extends JPanel implements KeyListener, ActionListener {
 	boolean ingame;
+	boolean startMinigame;
 	StackPanel parent;
 	Entity[][] map;
 	Entity[][] lasers;
-	Guard[] guards;
-	Set<Character> pressed;
+	Entity[][] guards;
 	Player player;
+	Timer t;
+	Set<Character> pressed;
 
-	MapPanel(Entity[][] map, Guard[] guards, StackPanel parent) {
+	/**
+	 * @param map
+	 * @param guards
+	 * @param parent
+	 */
+	MapPanel(Entity[][] map, Entity[][] guards, StackPanel parent) {
 		ingame = true;
+		startMinigame = false;
 		this.map = map;
 		this.lasers = new Entity[map.length][map[0].length];
 		this.guards = guards;
 		this.parent = parent;
 		this.player = new Player(0, 0, 0);
-		pressed = new HashSet<Character>();
+		this.t = new Timer(16,this);
+		this.pressed = new HashSet<Character>();
 		addKeyListener(this);
 		setFocusable(true);
+		t.start();
 		requestFocusInWindow();
 		setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
 	}
 
 	@Override
-	protected void paintComponent(Graphics g) {
+	protected void paintComponent(Graphics g){
 		super.paintComponent(g);
 		if (ingame == true) {
-			player.update(pressed);
-			player.drawSelf(g);
-			for (int hc = 0; hc < map.length; hc++) {
-				for (int vc = 0; vc < map[0].length; vc++) {
+			for (int vc = 0; vc < map.length; vc++) {
+				for (int hc = 0; hc < map[0].length; hc++) {
 					if (map[hc][vc] instanceof LaserNode) {
-						if (((LaserNode) map[hc][vc]).hacked == false) {
-							((LaserNode) map[hc][vc]).connect(map, lasers);
-						} 
-						else if (((LaserNode) map[hc][vc]).hacked == true && ((LaserNode) map[hc][vc]).connected.size() > 0) {
-							((LaserNode) map[hc][vc]).disconnect(map, lasers);
-						}
 						((LaserNode) map[hc][vc]).drawSelf(g);
 					} 
 					else if (map[hc][vc] instanceof Terminal) {
@@ -55,34 +62,18 @@ public class MapPanel extends JPanel implements KeyListener {
 					} 
 					else if (map[hc][vc] instanceof WarpTile) {
 						((WarpTile) map[hc][vc]).drawSelf(g);
-						if (((WarpTile) map[hc][vc]).warp == true) {
-							pressed.clear();
-							((WarpTile) map[hc][vc]).warp = false;
-							CardLayout savedLayout = (CardLayout)parent.getLayout();
-							String mapname = ((WarpTile) map[hc][vc]).connectedMapName;
-							((MapPanel)parent.getComponentByName(mapname)).player.x = ((WarpTile) map[hc][vc]).connectedX;
-							((MapPanel)parent.getComponentByName(mapname)).player.y = ((WarpTile) map[hc][vc]).connectedY;
-							savedLayout.show(parent, mapname);
-							((JPanel)parent.getComponentByName(mapname)).requestFocusInWindow();
-						}
 					}
-					else if (map[hc][vc] != null) {
-						g.setColor(Color.BLACK);
-						g.fillRect(map[hc][vc].x * Entity.Size, map[hc][vc].y * Entity.Size, Entity.Size, Entity.Size);
+					if(guards[hc][vc] != null) {
+						((Guard)guards[hc][vc]).drawSelf(g);
 					}
 					if (lasers[hc][vc] instanceof LaserBeam) {
-						((LaserBeam) lasers[hc][vc]).drawSelf(g);
+						((LaserBeam)lasers[hc][vc]).drawSelf(g);
 					}
 				}
 			}
-			for (int c = 0; c < guards.length; c++) {
-				if (guards[c] != null) {
-					guards[c].followPath();
-					guards[c].setSightLine(map);
-					guards[c].drawSelf(g);
-				}
-			}
+			player.drawSelf(g);
 		} else {
+			this.setBackground(Color.BLACK);
 			g.setColor(Color.white);
 			g.setFont(new Font("Comic Sans", Font.BOLD, 20));
 			g.drawString("Game Over!", Toolkit.getDefaultToolkit().getScreenSize().height / 4, Toolkit.getDefaultToolkit().getScreenSize().height / 2);
@@ -137,6 +128,49 @@ public class MapPanel extends JPanel implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent key) {
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (ingame == true) {
+			player.update(pressed, map, guards);
+			for (int vc = 0; vc < map.length; vc++) {
+				for (int hc = 0; hc < map[0].length; hc++) {
+					if (map[hc][vc] instanceof Terminal) {
+						map[hc][vc].rejectPlayer(player);
+					}
+					if (map[hc][vc] instanceof LaserNode) {
+						if (((LaserNode) map[hc][vc]).isHacked() == false) {
+							((LaserNode) map[hc][vc]).connect(map, lasers);
+						} 
+						else if (((LaserNode) map[hc][vc]).isHacked() == true && ((LaserNode) map[hc][vc]).connected.size() > 0) {
+							((LaserNode) map[hc][vc]).disconnect(map, lasers);
+						}
+						map[hc][vc].rejectPlayer(player);
+					} 
+					else if (map[hc][vc] instanceof WarpTile) {
+						if (((WarpTile) map[hc][vc]).isWarp() == true) {
+							pressed.clear();
+							((WarpTile) map[hc][vc]).setWarp(false);
+							CardLayout savedLayout = (CardLayout) parent.getLayout();
+							String mapname = ((WarpTile) map[hc][vc]).getConnectedMapName();
+							((MapPanel) parent.getComponentByName(mapname)).player.setX(((WarpTile) map[hc][vc]).getConnectedX());
+							((MapPanel) parent.getComponentByName(mapname)).player.setY(((WarpTile) map[hc][vc]).getConnectedY());
+							savedLayout.show(parent, mapname);
+							((JPanel) parent.getComponentByName(mapname)).requestFocusInWindow();
+						}
+					}
+					if (guards[hc][vc] != null) {
+						((Guard) guards[hc][vc]).followPath();
+						((Guard) guards[hc][vc]).setSightLine(map);
+						((Guard) guards[hc][vc]).killPlayer(player, this);
+					}
+					if (lasers[hc][vc] instanceof LaserBeam) {
+						((LaserBeam) lasers[hc][vc]).killPlayer(player, this);
+					}
+				}
+			}
+		}
 	}
 
 }

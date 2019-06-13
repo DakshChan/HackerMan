@@ -1,13 +1,21 @@
+package src;
+
 import java.awt.Graphics;
 
 public class Obstacle extends Entity{
-	boolean hacked;
+	private boolean hacked;
 	Obstacle(int x, int y, int facing) {
 		super(x, y, facing);	
-		hacked = false;
+		setHacked(false);
 	}
 	Obstacle(int x, int y, int facing, boolean hacked) {
 		super(x, y, facing);	
+		this.setHacked(hacked);
+	}
+	public boolean isHacked() {
+		return hacked;
+	}
+	public void setHacked(boolean hacked) {
 		this.hacked = hacked;
 	}
 	@Override
@@ -15,7 +23,7 @@ public class Obstacle extends Entity{
 		
 	}
 	public void killPlayer(Player p, MapPanel map) {
-		if(this.hitbox.intersects(p.hitbox)) {
+		if(this.getHitbox().intersects(p.getHitbox())) {
 			map.ingame = false;
 		}
 	}

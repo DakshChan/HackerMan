@@ -1,17 +1,19 @@
+package src;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
 
 public class Guard extends Obstacle{
-	int index;
-	int xPixels;
-	int yPixels;
-	int sightRange;
-	boolean reverse;
-	Rectangle sightLine;
-	Pair[] path;
-	static Image[] guardTex;
+	private int index;
+	private int xPixels;
+	private int yPixels;
+	private int sightRange;
+	private boolean reverse;
+	private Rectangle sightLine;
+	private Pair[] path;
+	public static Image[] guardTex;
 	Guard(int x, int y, int facing, Pair[] path) {
 		super(x, y, facing);
 		this.index = 0;
@@ -34,20 +36,25 @@ public class Guard extends Obstacle{
 		}
 		Pair dist = findDist(path[index]);
 		if (dist.x > 0) {
-			this.xPixels += 1;
-			this.facing = 2;
+			this.xPixels += Size/8;
+			this.setFacing(2);
 		} 
 		else if (dist.x < 0) {
-			this.xPixels -= 1;
-			this.facing = 4;
+			this.xPixels -= Size/8;
+			this.setFacing(4);
 		} 
 		else if (dist.y > 0) {
-			this.yPixels += 1;
-			this.facing = 3;
+			this.yPixels += Size/8;
+			this.setFacing(3);
 		} 
 		else if (dist.y < 0) {
-			this.yPixels -= 1;
-			this.facing = 1;
+			this.yPixels -= Size/8;
+			this.setFacing(1);
+		}
+		if(Math.abs(dist.x) <= 5 && Math.abs(dist.y) <= 5) {
+			this.xPixels = (path[index].x)*Size;
+			this.yPixels = (path[index].y)*Size;
+			this.setFacing(0);
 		}
 		if(dist.x == 0 && dist.y == 0) {
 			if(reverse == true) {
@@ -57,25 +64,24 @@ public class Guard extends Obstacle{
 				index += 1;
 			}
 		}
-		
-		this.x = this.xPixels / Size;
-		this.y = this.yPixels / Size;
+		this.setX(this.xPixels / Size);
+		this.setY(this.yPixels / Size);
 
-		hitbox.x = this.xPixels;
-		hitbox.y = this.yPixels;
+		getHitbox().x = this.xPixels;
+		getHitbox().y = this.yPixels;
 	}
 	public void setSightLine(Entity[][]grid) {
 		int xStop; 
 		int yStop;
-		if (this.facing == 1) {
-			if(this.hacked) {
+		if (this.getFacing() == 1) {
+			if(this.isHacked()) {
 				yStop = Math.max(-1, (this.yPixels/Size) - sightRange);
 			}
 			else {
 				yStop = -1;
 			}
-			for (int c = this.y; c >= 0 && yStop == -1; c--) {
-				if(grid[this.x][c] != null) {
+			for (int c = this.getY(); c > yStop ; c--) {
+				if(grid[this.getX()][c] != null) {
 					yStop = c;
 				}
 			}
@@ -84,15 +90,15 @@ public class Guard extends Obstacle{
 			this.sightLine.width = Size;
 			this.sightLine.height = this.yPixels - (yStop+1)*Size;
 		} 
-		else if (this.facing == 2) {
-			if(this.hacked) {
+		else if (this.getFacing() == 2) {
+			if(this.isHacked()) {
 				xStop = Math.min(grid.length, (this.xPixels/Size) + (sightRange + 1));
 			}
 			else {
 				xStop = grid.length;
 			}
-			for (int c = this.x; c < xStop; c++) {
-				if(grid[c][this.y] != null) {
+			for (int c = this.getX(); c < xStop; c++) {
+				if(grid[c][this.getY()] != null) {
 					xStop = c;
 				}
 			}
@@ -102,15 +108,15 @@ public class Guard extends Obstacle{
 			this.sightLine.height = Size;
 			 
 		} 
-		else if (this.facing == 3) {
-			if(this.hacked) {
-				yStop = Math.min(grid[this.y].length, (this.yPixels/Size) + (sightRange + 1));
+		else if (this.getFacing() == 3) {
+			if(this.isHacked()) {
+				yStop = Math.min(grid[this.getY()].length, (this.yPixels/Size) + (sightRange + 1));
 			}
 			else {
-				yStop = grid[this.y].length;
+				yStop = grid[this.getY()].length;
 			}
-			for (int c = this.y; c < yStop; c++) {
-				if(grid[this.x][c] != null) {
+			for (int c = this.getY(); c < yStop; c++) {
+				if(grid[this.getX()][c] != null) {
 					yStop = c;
 				}
 			}
@@ -120,15 +126,15 @@ public class Guard extends Obstacle{
 			this.sightLine.height = yStop*Size - (this.yPixels + Size);
 			//System.out.println(yStop);
 		} 
-		else if (this.facing == 4) {
-			if(this.hacked) {
+		else if (this.getFacing() == 4) {
+			if(this.isHacked()) {
 				xStop = Math.max(-1, (this.xPixels/Size) - (sightRange));
 			}
 			else {
 				xStop = -1;
 			}
-			for (int c = this.x; c >= 0 && xStop == -1; c--) {
-				if(grid[c][this.y] != null) {
+			for (int c = this.getX(); c >= 0 && xStop == -1; c--) {
+				if(grid[c][this.getY()] != null) {
 					xStop = c;
 				}
 			}
@@ -137,18 +143,24 @@ public class Guard extends Obstacle{
 			this.sightLine.width = this.xPixels - (xStop + 1)*Size;
 			this.sightLine.height = Size;
 		}
+		else {
+			this.sightLine.x = this.xPixels;
+			this.sightLine.y = this.yPixels;
+			this.sightLine.width = Size;
+			this.sightLine.height = Size;
+		}
 	}
 	@Override
 	public void killPlayer(Player p, MapPanel map){
-		if(this.hitbox.intersects(p.hitbox) || this.sightLine.intersects(p.hitbox)) {
+		if(this.getHitbox().intersects(p.getHitbox()) || this.sightLine.intersects(p.getHitbox())) {
 			map.ingame = false;
 		}
 	}
 	@Override
 	public void drawSelf(Graphics g) {
-		g.setColor(Color.RED);
-		g.fillRect(this.xPixels, this.yPixels, Entity.Size, Entity.Size);
 		g.setColor(Color.YELLOW);
 		g.fillRect(this.sightLine.x, this.sightLine.y, this.sightLine.width, this.sightLine.height);
+		g.setColor(Color.RED);
+		g.fillRect(this.xPixels, this.yPixels, Entity.Size, Entity.Size);
 	}
 }

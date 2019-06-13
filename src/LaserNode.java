@@ -1,3 +1,5 @@
+package src;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -19,65 +21,65 @@ public class LaserNode extends Obstacle{
 		int yUpper = grid[0].length;
 		int xLower = -1;
 		int yLower = -1;
-		for (int c = this.y - 1; c > yLower; c--) {
-			if(grid[this.x][c] != null) {
-				if(grid[this.x][c] instanceof LaserNode && ((LaserNode)grid[this.x][c]).hacked == false) {
-					connected.add(new Pair(this.x,c));
+		for (int c = this.getY() - 1; c > yLower; c--) {
+			if(grid[this.getX()][c] != null) {
+				if(grid[this.getX()][c] instanceof LaserNode && ((LaserNode)grid[this.getX()][c]).isHacked() == false) {
+					connected.add(new Pair(this.getX(),c));
 				}
 				yLower = c;
 			}
 		}
-		for (int c = this.y + 1; c < yUpper; c++) {
-			if(grid[this.x][c] != null) {
-				if(grid[this.x][c] instanceof LaserNode && ((LaserNode)grid[this.x][c]).hacked == false) {
-					connected.add(new Pair(this.x,c));
+		for (int c = this.getY() + 1; c < yUpper; c++) {
+			if(grid[this.getX()][c] != null) {
+				if(grid[this.getX()][c] instanceof LaserNode && ((LaserNode)grid[this.getX()][c]).isHacked() == false) {
+					connected.add(new Pair(this.getX(),c));
 				}
 				yUpper = c;
 			}
 		}
-		for (int c = this.x - 1; c > xLower; c--) {
-			if(grid[c][this.y] != null) {
-				if(grid[c][this.y] instanceof LaserNode && ((LaserNode)grid[c][this.y]).hacked == false) {
-					connected.add(new Pair(c, this.y));
+		for (int c = this.getX() - 1; c > xLower; c--) {
+			if(grid[c][this.getY()] != null) {
+				if(grid[c][this.getY()] instanceof LaserNode && ((LaserNode)grid[c][this.getY()]).isHacked() == false) {
+					connected.add(new Pair(c, this.getY()));
 				}
 				xLower = c;
 			}
 		}
-		for (int c = this.x + 1; c < xUpper; c++) {
-			if(grid[c][this.y] != null) {
-				if(grid[c][this.y] instanceof LaserNode && ((LaserNode)grid[c][this.y]).hacked == false) {
-					connected.add(new Pair(c, this.y));
+		for (int c = this.getX() + 1; c < xUpper; c++) {
+			if(grid[c][this.getY()] != null) {
+				if(grid[c][this.getY()] instanceof LaserNode && ((LaserNode)grid[c][this.getY()]).isHacked() == false) {
+					connected.add(new Pair(c, this.getY()));
 				}
 				xUpper = c;
 			}
 		}
 		for(int c = 0; c < connected.size(); c++) {
 			Pair target = connected.get(c);
-			if(target.x - this.x < 0) {
-				for(int i = target.x + 1; i < this.x; i++) {
-					if(laser[i][this.y] == null) {
-						laser[i][this.y] = new LaserBeam(i, this.y, 0);
+			if(target.x - this.getX() < 0) {
+				for(int i = target.x + 1; i < this.getX(); i++) {
+					if(laser[i][this.getY()] == null) {
+						laser[i][this.getY()] = new LaserBeam(i, this.getY(), 0);
 					}
 				}
 			}
-			else if(target.y - this.y < 0) {
-				for(int i = target.y + 1; i < this.y; i++) {
-					if(laser[this.x][i] == null) {
-						laser[this.x][i] = new LaserBeam(this.x, i, 0);
+			else if(target.y - this.getY() < 0) {
+				for(int i = target.y + 1; i < this.getY(); i++) {
+					if(laser[this.getX()][i] == null) {
+						laser[this.getX()][i] = new LaserBeam(this.getX(), i, 0);
 					}
 				}
 			}
-			else if(target.x - this.x > 0) {
-				for(int i = this.x + 1; i < target.x; i++) {
-					if(laser[i][this.y] == null) {
-						laser[i][this.y] = new LaserBeam(i, this.y, 0);
+			else if(target.x - this.getX() > 0) {
+				for(int i = this.getX() + 1; i < target.x; i++) {
+					if(laser[i][this.getY()] == null) {
+						laser[i][this.getY()] = new LaserBeam(i, this.getY(), 0);
 					}
 				}
 			}
-			else if(target.y - this.y > 0) {
-				for(int i = this.y + 1; i < target.y; i++) {
-					if(laser[this.x][i] == null) {
-						laser[this.x][i] = new LaserBeam(this.x, i, 0);
+			else if(target.y - this.getY() > 0) {
+				for(int i = this.getY() + 1; i < target.y; i++) {
+					if(laser[this.getX()][i] == null) {
+						laser[this.getX()][i] = new LaserBeam(this.getX(), i, 0);
 					}
 				}
 			}
@@ -87,31 +89,31 @@ public class LaserNode extends Obstacle{
 		for(int c = 0; c < connected.size(); c++) {
 			Pair target = connected.get(c);
 			((LaserNode)grid[target.x][target.y]).connected.clear();
-			if(target.x - this.x < 0) {
-				for(int i = target.x + 1; i < this.x; i++) {
-					if(laser[i][this.y] != null) {
-						laser[i][this.y] = null;
+			if(target.x - this.getX() < 0) {
+				for(int i = target.x + 1; i < this.getX(); i++) {
+					if(laser[i][this.getY()] != null) {
+						laser[i][this.getY()] = null;
 					}
 				}
 			}
-			else if(target.y - this.y < 0) {
-				for(int i = target.y + 1; i < this.y; i++) {
-					if(laser[this.x][i] != null) {
-						laser[this.x][i] = null;
+			else if(target.y - this.getY() < 0) {
+				for(int i = target.y + 1; i < this.getY(); i++) {
+					if(laser[this.getX()][i] != null) {
+						laser[this.getX()][i] = null;
 					}
 				}
 			}
-			else if(target.x - this.x > 0) {
-				for(int i = this.x + 1; i < target.x; i++) {
-					if(laser[i][this.y] != null) {
-						laser[i][this.y] = null;
+			else if(target.x - this.getX() > 0) {
+				for(int i = this.getX() + 1; i < target.x; i++) {
+					if(laser[i][this.getY()] != null) {
+						laser[i][this.getY()] = null;
 					}
 				}
 			}
-			else if(target.y - this.y > 0) {
-				for(int i = this.y + 1; i < target.y; i++) {
-					if(laser[this.x][i] != null) {
-						laser[this.x][i] = null;
+			else if(target.y - this.getY() > 0) {
+				for(int i = this.getY() + 1; i < target.y; i++) {
+					if(laser[this.getX()][i] != null) {
+						laser[this.getX()][i] = null;
 					}
 				}
 			}
@@ -121,6 +123,6 @@ public class LaserNode extends Obstacle{
 	@Override
 	public void drawSelf(Graphics g) {
 		g.setColor(Color.BLUE);
-		g.fillRect(x*Size, y*Size, Size, Size);
+		g.fillRect(getX()*Size, getY()*Size, Size, Size);
 	}
 }

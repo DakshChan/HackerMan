@@ -1,3 +1,5 @@
+package src;
+
 import java.awt.Component;
 import java.awt.LayoutManager;
 import java.util.HashMap;
